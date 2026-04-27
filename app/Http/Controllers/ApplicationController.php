@@ -23,9 +23,6 @@ class ApplicationController extends Controller
 
     public function store(Request $request)
     {
-        // Remove sole-CNIC unique constraint from DB if still present
-        $this->fixCnicConstraint();
-
         // PHP-level duplicate check (CNIC + position combo)
         if ($request->cnic && $request->position_id) {
             $exists = Application::where('cnic', $request->cnic)
@@ -155,59 +152,4 @@ class ApplicationController extends Controller
         ]);
     }
 
-    /**
-     * Remove a sole UNIQUE constraint on applications.cnic if present.
-     * Allows same CNIC to apply for multiple positions.
-     */
-    private function fixCnicConstraint(): void
-    {
-        try {
-            DB::statement('PRAGMA foreign_keys=off');
-
-            $indexes = DB::select("PRAGMA index_list('applications')");
-            $needsFix = false;
-
-            foreach ($indexes as $index) {
-                if (!$index->unique) continue;
-
-                $cols     = DB::select("PRAGMA index_info('{$index->name}')");
-                $colNames = collect($cols)->pluck('name')->toArray();
-
-                // Only target a unique index that is solely on 'cnic'
-                if ($colNames === ['cnic']) {
-                    $needsFix = true;
-                    break;
-                }
-            }
-
-            if ($needsFix) {
-                DB::statement('DROP TABLE IF EXISTS _app_fix_tmp');
-                DB::statement('CREATE TABLE _app_fix_tmp AS SELECT * FROM applications');
-                DB::statement('DROP TABLE applications');
-                DB::statement("CREATE TABLE applications (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    application_id VARCHAR NOT NULL,
-                    full_name VARCHAR NOT NULL,
-                    father_name VARCHAR NOT NULL,
-                    cnic VARCHAR NOT NULL,
-                    date_of_birth DATE NOT NULL,
-                    mobile VARCHAR NOT NULL,
-                    email VARCHAR NOT NULL,
-                    address TEXT NOT NULL,
-                    qualification VARCHAR NOT NULL,
-                    position_id INTEGER NOT NULL,
-                    status VARCHAR NOT NULL DEFAULT 'pending',
-                    admin_notes TEXT,
-                    created_at DATETIME,
-                    updated_at DATETIME
-                )");
-                DB::statement('INSERT INTO applications SELECT * FROM _app_fix_tmp');
-                DB::statement('DROP TABLE IF EXISTS _app_fix_tmp');
-            }
-
-            DB::statement('PRAGMA foreign_keys=on');
-        } catch (\Exception $e) {
-            DB::statement('PRAGMA foreign_keys=on');
-        }
-    }
 }
