@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class AppServiceProvider extends ServiceProvider
@@ -12,37 +11,33 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        // Auto-add any missing columns on every boot (SQLite-safe, fast after first run)
         try {
             if (!Schema::hasTable('positions') || !Schema::hasTable('challans')) {
                 return;
             }
 
-            $posCols     = array_column(DB::select("PRAGMA table_info('positions')"), 'name');
-            $challanCols = array_column(DB::select("PRAGMA table_info('challans')"), 'name');
-
-            // Positions: new columns from advertisement
-            if (!in_array('bps', $posCols))
-                DB::statement("ALTER TABLE positions ADD COLUMN bps VARCHAR DEFAULT NULL");
-            if (!in_array('vacancies', $posCols))
-                DB::statement("ALTER TABLE positions ADD COLUMN vacancies INTEGER DEFAULT 0");
-            if (!in_array('age_limit', $posCols))
-                DB::statement("ALTER TABLE positions ADD COLUMN age_limit VARCHAR DEFAULT NULL");
-            if (!in_array('qualification_required', $posCols))
-                DB::statement("ALTER TABLE positions ADD COLUMN qualification_required VARCHAR DEFAULT NULL");
-            if (!in_array('domicile', $posCols))
-                DB::statement("ALTER TABLE positions ADD COLUMN domicile VARCHAR DEFAULT NULL");
+            // Positions: new columns
+            if (!Schema::hasColumn('positions', 'bps'))
+                Schema::table('positions', fn($t) => $t->string('bps')->nullable());
+            if (!Schema::hasColumn('positions', 'vacancies'))
+                Schema::table('positions', fn($t) => $t->integer('vacancies')->default(0));
+            if (!Schema::hasColumn('positions', 'age_limit'))
+                Schema::table('positions', fn($t) => $t->string('age_limit')->nullable());
+            if (!Schema::hasColumn('positions', 'qualification_required'))
+                Schema::table('positions', fn($t) => $t->string('qualification_required')->nullable());
+            if (!Schema::hasColumn('positions', 'domicile'))
+                Schema::table('positions', fn($t) => $t->string('domicile')->nullable());
 
             // Challans: fee verification columns
-            if (!in_array('is_fee_verified', $challanCols))
-                DB::statement("ALTER TABLE challans ADD COLUMN is_fee_verified INTEGER DEFAULT 0");
-            if (!in_array('fee_verified_at', $challanCols))
-                DB::statement("ALTER TABLE challans ADD COLUMN fee_verified_at DATETIME DEFAULT NULL");
-            if (!in_array('fee_verified_by', $challanCols))
-                DB::statement("ALTER TABLE challans ADD COLUMN fee_verified_by INTEGER DEFAULT NULL");
+            if (!Schema::hasColumn('challans', 'is_fee_verified'))
+                Schema::table('challans', fn($t) => $t->boolean('is_fee_verified')->default(false));
+            if (!Schema::hasColumn('challans', 'fee_verified_at'))
+                Schema::table('challans', fn($t) => $t->dateTime('fee_verified_at')->nullable());
+            if (!Schema::hasColumn('challans', 'fee_verified_by'))
+                Schema::table('challans', fn($t) => $t->integer('fee_verified_by')->nullable());
 
         } catch (\Exception $e) {
-            // Tables may not exist yet (first-time setup) — silently skip
+            // silently skip if tables don't exist yet
         }
     }
 }
