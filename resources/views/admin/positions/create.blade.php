@@ -51,7 +51,7 @@
                     </div>
                     <div class="col-md-3">
                         <label class="form-label fw-bold">Fee Amount (Rs.) <span class="text-danger">*</span></label>
-                        <input type="number" name="fee_amount" class="form-control @error('fee_amount') is-invalid @enderror" value="{{ old('fee_amount',300) }}" min="0" required>
+                        <input type="number" name="fee_amount" class="form-control @error('fee_amount') is-invalid @enderror" value="{{ old('fee_amount',450) }}" min="0" required>
                         @error('fee_amount')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                     <div class="col-md-3 d-flex align-items-end">

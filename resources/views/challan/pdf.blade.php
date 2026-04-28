@@ -101,20 +101,17 @@
             <div class="info-row"><div class="info-label">Mobile Number:</div><div class="info-value">{{ $application->mobile }}</div></div>
         </div>
         <div class="qr-box">
-            <div class="qr-placeholder">&#9635;&#9635;<br>QR<br>&#9635;&#9635;</div>
+            @if(!empty($qrCodeBase64))
+            <img src="{{ $qrCodeBase64 }}" style="width:34pt;height:34pt;object-fit:contain;">
+            @endif
         </div>
     </div>
 
     <div class="section-header">Fee Details</div>
-    <div class="section-with-qr">
-        <div class="section-content">
-            <div class="fee-row"><div class="fee-label">Application Fee:</div><div class="fee-value">Rs. {{ number_format($challan->fee_amount) }}/-</div></div>
-            <div class="fee-row"><div class="fee-label">Bank Charges:</div><div class="fee-value">Rs. {{ number_format($challan->bank_charges) }}/-</div></div>
-            <div class="fee-row fee-total"><div class="fee-label">Total Amount:</div><div class="fee-value">Rs. {{ number_format($challan->total_amount) }}/-</div></div>
-        </div>
-        <div class="qr-box" style="padding-left: 3pt;">
-            <div class="barcode-placeholder">||| || | ||||| |</div>
-        </div>
+    <div class="fee-table">
+        <div class="fee-row"><div class="fee-label">Application Fee:</div><div class="fee-value">Rs. {{ number_format($challan->fee_amount) }}/-</div></div>
+        <div class="fee-row"><div class="fee-label">Bank Charges:</div><div class="fee-value">Rs. {{ number_format($challan->bank_charges) }}/-</div></div>
+        <div class="fee-row fee-total"><div class="fee-label">Total Amount:</div><div class="fee-value">Rs. {{ number_format($challan->total_amount) }}/-</div></div>
     </div>
 
     <div class="section-header">Bank Details</div>
@@ -131,10 +128,10 @@
 
     <div class="section-header">Important Instructions</div>
     <ol class="instruction-list">
-        <li>Fee is non-refundable.</li>
+        <li>Bring original receipt at interview.</li>
         <li>Incomplete applications will not be accepted.</li>
         <li>After fee submission, upload paid receipt online.</li>
-        <li>Bring original receipt at interview.</li>
+        <li>Fee is non-refundable.</li>
     </ol>
 
     <div class="copy-label label-bank">BANK COPY</div>
@@ -168,20 +165,17 @@
             <div class="info-row"><div class="info-label">Mobile Number:</div><div class="info-value">{{ $application->mobile }}</div></div>
         </div>
         <div class="qr-box">
-            <div class="qr-placeholder">&#9635;&#9635;<br>QR<br>&#9635;&#9635;</div>
+            @if(!empty($qrCodeBase64))
+            <img src="{{ $qrCodeBase64 }}" style="width:34pt;height:34pt;object-fit:contain;">
+            @endif
         </div>
     </div>
 
     <div class="section-header">Fee Details</div>
-    <div class="section-with-qr">
-        <div class="section-content">
-            <div class="fee-row"><div class="fee-label">Application Fee:</div><div class="fee-value">Rs. {{ number_format($challan->fee_amount) }}/-</div></div>
-            <div class="fee-row"><div class="fee-label">Bank Charges:</div><div class="fee-value">Rs. {{ number_format($challan->bank_charges) }}/-</div></div>
-            <div class="fee-row fee-total"><div class="fee-label">Total Amount:</div><div class="fee-value">Rs. {{ number_format($challan->total_amount) }}/-</div></div>
-        </div>
-        <div class="qr-box" style="padding-left: 3pt;">
-            <div class="barcode-placeholder">||| || | ||||| |</div>
-        </div>
+    <div class="fee-table">
+        <div class="fee-row"><div class="fee-label">Application Fee:</div><div class="fee-value">Rs. {{ number_format($challan->fee_amount) }}/-</div></div>
+        <div class="fee-row"><div class="fee-label">Bank Charges:</div><div class="fee-value">Rs. {{ number_format($challan->bank_charges) }}/-</div></div>
+        <div class="fee-row fee-total"><div class="fee-label">Total Amount:</div><div class="fee-value">Rs. {{ number_format($challan->total_amount) }}/-</div></div>
     </div>
 
     <div class="section-header">Bank Details</div>
@@ -198,10 +192,10 @@
 
     <div class="section-header">Important Instructions</div>
     <ol class="instruction-list">
-        <li>Fee is non-refundable.</li>
+        <li>Bring original receipt at interview.</li>
         <li>Incomplete applications will not be accepted.</li>
         <li>After fee submission, upload paid receipt online.</li>
-        <li>Bring original receipt at interview.</li>
+        <li>Fee is non-refundable.</li>
     </ol>
 
     <div class="copy-label label-candidate">CANDIDATE COPY</div>
@@ -235,20 +229,17 @@
             <div class="info-row"><div class="info-label">Mobile Number:</div><div class="info-value">{{ $application->mobile }}</div></div>
         </div>
         <div class="qr-box">
-            <div class="qr-placeholder">&#9635;&#9635;<br>QR<br>&#9635;&#9635;</div>
+            @if(!empty($qrCodeBase64))
+            <img src="{{ $qrCodeBase64 }}" style="width:34pt;height:34pt;object-fit:contain;">
+            @endif
         </div>
     </div>
 
     <div class="section-header">Fee Details</div>
-    <div class="section-with-qr">
-        <div class="section-content">
-            <div class="fee-row"><div class="fee-label">Application Fee:</div><div class="fee-value">Rs. {{ number_format($challan->fee_amount) }}/-</div></div>
-            <div class="fee-row"><div class="fee-label">Bank Charges:</div><div class="fee-value">Rs. {{ number_format($challan->bank_charges) }}/-</div></div>
-            <div class="fee-row fee-total"><div class="fee-label">Total Amount:</div><div class="fee-value">Rs. {{ number_format($challan->total_amount) }}/-</div></div>
-        </div>
-        <div class="qr-box" style="padding-left: 3pt;">
-            <div class="barcode-placeholder">||| || | ||||| |</div>
-        </div>
+    <div class="fee-table">
+        <div class="fee-row"><div class="fee-label">Application Fee:</div><div class="fee-value">Rs. {{ number_format($challan->fee_amount) }}/-</div></div>
+        <div class="fee-row"><div class="fee-label">Bank Charges:</div><div class="fee-value">Rs. {{ number_format($challan->bank_charges) }}/-</div></div>
+        <div class="fee-row fee-total"><div class="fee-label">Total Amount:</div><div class="fee-value">Rs. {{ number_format($challan->total_amount) }}/-</div></div>
     </div>
 
     <div class="section-header">Bank Details</div>
@@ -265,10 +256,10 @@
 
     <div class="section-header">Important Instructions</div>
     <ol class="instruction-list">
-        <li>Fee is non-refundable.</li>
+        <li>Bring original receipt at interview.</li>
         <li>Incomplete applications will not be accepted.</li>
         <li>After fee submission, upload paid receipt online.</li>
-        <li>Bring original receipt at interview.</li>
+        <li>Fee is non-refundable.</li>
     </ol>
 
     <div class="copy-label label-office">OFFICE COPY</div>

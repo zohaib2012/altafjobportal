@@ -27,7 +27,7 @@
                 </div>
                 <div class="fs-1 fw-bold mb-2" style="color: var(--gray-light);">2</div>
                 <h5 class="fw-bold mb-2">Download Challan</h5>
-                <p class="text-muted mb-0">Download fee challan (Rs.300) from your dashboard and pay at bank or via mobile</p>
+                <p class="text-muted mb-0">Download fee challan (Rs.450) from your dashboard and pay at bank or via mobile</p>
             </div>
         </div>
         <div class="col-md-4">
@@ -53,7 +53,7 @@
                         </div>
                         <div>
                             <div class="fw-bold">Amount</div>
-                            <small style="opacity: 0.85;">Rs. 300 (Non-Refundable)</small>
+                            <small style="opacity: 0.85;">Rs. 450 (Non-Refundable)</small>
                         </div>
                     </div>
                     <div class="d-flex align-items-center gap-3 p-3" style="background: rgba(255,255,255,0.1); border-radius: 12px;">
@@ -110,6 +110,10 @@
                     <li class="d-flex align-items-start gap-2">
                         <i class="fas fa-check-circle mt-1" style="color: var(--green);"></i>
                         <span>Application fee is non-refundable (for registration only)</span>
+                    </li>
+                    <li class="d-flex align-items-start gap-2">
+                        <i class="fas fa-check-circle mt-1" style="color: var(--green);"></i>
+                        <span>Written/interview test will be conducted at District level.</span>
                     </li>
                 </ul>
             </div>

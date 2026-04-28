@@ -342,7 +342,7 @@
                                 <div class="d-flex align-items-start gap-3">
                                     <input type="checkbox" id="terms" required style="margin-top: 4px;">
                                     <label for="terms" class="mb-0" style="font-size: 0.95rem; line-height: 1.6;">
-                                        I confirm that all information provided in this application is correct and accurate to the best of my knowledge. I understand that any false information may lead to rejection or termination of my application. I agree to the <a href="{{ route('instructions') }}">terms and conditions</a> and processing fee of Rs. 300 is non-refundable.
+                                        I confirm that all information provided in this application is correct and accurate to the best of my knowledge. I understand that any false information may lead to rejection or termination of my application. I agree to the <a href="{{ route('instructions') }}">terms and conditions</a> and processing fee of Rs. 450 is non-refundable.
                                     </label>
                                 </div>
                             </div>

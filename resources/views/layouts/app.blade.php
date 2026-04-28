@@ -413,7 +413,7 @@
 
         footer {
             background: var(--primary-navy);
-            color: rgba(255,255,255,0.7);
+            color: rgba(255,255,255,0.92);
             padding: 4rem 0 2rem;
             margin-top: auto;
         }
@@ -425,7 +425,7 @@
         }
 
         footer a {
-            color: rgba(255,255,255,0.7);
+            color: rgba(255,255,255,0.92);
             transition: all var(--transition-normal);
         }
 
@@ -556,10 +556,32 @@
 
         @media (max-width: 991px) {
             .navbar-collapse {
-                background: var(--primary-navy);
+                background: #0f2044;
                 padding: 1rem;
                 border-radius: 12px;
                 margin-top: 0.5rem;
+                border: 1px solid rgba(255,255,255,0.15);
+            }
+
+            .navbar-collapse .nav-link {
+                color: #ffffff !important;
+                font-weight: 600;
+                padding: 0.65rem 1rem !important;
+                border-bottom: 1px solid rgba(255,255,255,0.08);
+            }
+
+            .navbar-collapse .nav-link:last-child {
+                border-bottom: none;
+            }
+
+            .navbar-collapse .d-flex {
+                margin-top: 0.75rem;
+                flex-wrap: wrap;
+                gap: 0.5rem !important;
+            }
+
+            .navbar-toggler-icon {
+                filter: brightness(0) invert(1);
             }
 
             .hero-section {
@@ -674,7 +696,7 @@
                             <small>Learn · Connect · Succeed</small>
                         </div>
                     </div>
-                    <p class="small" style="color: rgba(255,255,255,0.6);">Empowering Pakistan through quality education and career opportunities. Join thousands of candidates building their future.</p>
+                    <p class="small" style="color: rgba(255,255,255,0.92);">Empowering Pakistan through quality education and career opportunities. Join thousands of candidates building their future.</p>
                     <div class="d-flex gap-2">
                         <a href="#" class="btn btn-sm" style="background: rgba(255,255,255,0.1); border-radius: 8px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
                             <i class="fab fa-facebook-f"></i>
@@ -728,10 +750,19 @@
             </div>
             <hr style="border-color: rgba(255,255,255,0.1); margin: 2rem 0;">
             <div class="text-center">
-                <small style="color: rgba(255,255,255,0.5);">&copy; {{ date('Y') }} National EduPortal Hub. All rights reserved.</small>
+                <small style="color: rgba(255,255,255,0.85);">&copy; {{ date('Y') }} National EduPortal Hub. All rights reserved.</small>
             </div>
         </div>
     </footer>
+
+    {{-- WhatsApp Floating Button --}}
+    <a href="https://wa.me/923393511003" target="_blank" rel="noopener noreferrer"
+       title="Chat on WhatsApp"
+       style="position:fixed;bottom:24px;right:24px;z-index:9999;width:58px;height:58px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(37,211,102,0.5);text-decoration:none;transition:transform 0.2s,box-shadow 0.2s;"
+       onmouseover="this.style.transform='scale(1.12)';this.style.boxShadow='0 8px 28px rgba(37,211,102,0.65)'"
+       onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 4px 20px rgba(37,211,102,0.5)'">
+        <i class="fab fa-whatsapp" style="color:#fff;font-size:2rem;line-height:1;"></i>
+    </a>
 
     <script>
         function toggleTheme() {

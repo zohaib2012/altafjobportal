@@ -49,9 +49,9 @@
                     <i class="fas fa-receipt"></i>
                 </div>
                 <h5 class="fw-bold mb-2">Step 2: Pay Challan</h5>
-                <p class="text-muted mb-0">Download fee challan (Rs.300) and pay at any bank or mobile banking</p>
+                <p class="text-muted mb-0">Download fee challan (Rs.450) and pay at any bank or mobile banking</p>
                 <div class="mt-3">
-                    <span class="badge-custom" style="background: rgba(245,158,11,0.15); color: #D97706;">Rs. 300</span>
+                    <span class="badge-custom" style="background: rgba(245,158,11,0.15); color: #D97706;">Rs. 450</span>
                 </div>
             </div>
         </div>
@@ -74,27 +74,27 @@
     <div class="container">
         <div class="row text-center text-white g-4">
             <div class="col-6 col-md-3">
-                <div class="stat-card" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1);">
-                    <div class="stat-number" style="font-size: 2rem;">50,000+</div>
-                    <small style="opacity: 0.8;">Applications Received</small>
+                <div class="stat-card" style="background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);">
+                    <div style="font-size: 2rem; font-weight: 800; font-family: 'Poppins', sans-serif; color: #FCD34D;">50,000+</div>
+                    <small style="color: #ffffff; font-weight: 600;">Applications Received</small>
                 </div>
             </div>
             <div class="col-6 col-md-3">
-                <div class="stat-card" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1);">
-                    <div class="stat-number" style="font-size: 2rem;">10+</div>
-                    <small style="opacity: 0.8;">Open Positions</small>
+                <div class="stat-card" style="background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);">
+                    <div style="font-size: 2rem; font-weight: 800; font-family: 'Poppins', sans-serif; color: #FCD34D;">13</div>
+                    <small style="color: #ffffff; font-weight: 600;">Open Positions</small>
                 </div>
             </div>
             <div class="col-6 col-md-3">
-                <div class="stat-card" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1);">
-                    <div class="stat-number" style="font-size: 2rem;">95%</div>
-                    <small style="opacity: 0.8;">Placement Rate</small>
+                <div class="stat-card" style="background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);">
+                    <div style="font-size: 2rem; font-weight: 800; font-family: 'Poppins', sans-serif; color: #FCD34D;">95%</div>
+                    <small style="color: #ffffff; font-weight: 600;">Placement Rate</small>
                 </div>
             </div>
             <div class="col-6 col-md-3">
-                <div class="stat-card" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1);">
-                    <div class="stat-number" style="font-size: 2rem;"><i class="fas fa-shield-alt"></i></div>
-                    <small style="opacity: 0.8;">100% Secure</small>
+                <div class="stat-card" style="background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);">
+                    <div style="font-size: 2rem; font-weight: 800; font-family: 'Poppins', sans-serif; color: #FCD34D;"><i class="fas fa-shield-alt"></i></div>
+                    <small style="color: #ffffff; font-weight: 600;">100% Secure</small>
                 </div>
             </div>
         </div>
@@ -187,7 +187,7 @@
                         </div>
                         <div>
                             <div class="fw-bold">Processing Fee</div>
-                            <small class="text-muted">Rs. 300 (Non-Refundable)</small>
+                            <small class="text-muted">Rs. 450 (Non-Refundable)</small>
                         </div>
                     </div>
                     <div class="d-flex align-items-center gap-3 p-3" style="background: rgba(245,158,11,0.05); border-radius: 10px;">

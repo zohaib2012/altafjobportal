@@ -217,9 +217,12 @@
                 </button>
                 <p class="text-muted small text-center mt-1">Verified {{ $application->challan->fee_verified_at?->format('d M Y') }}</p>
                 @else
-                <button type="submit" class="btn w-100" style="background:rgba(16,185,129,0.1);border:1.5px solid rgba(16,185,129,0.4);color:#059669;border-radius:10px;font-weight:600;">
+                <!-- <button type="submit" class="btn w-100" style="background:rgba(16,185,129,0.1);border:1.5px solid rgba(16,185,129,0.4);color:#059669;border-radius:10px;font-weight:600;">
                     <i class="fas fa-check-circle me-2"></i> Mark Fee Verified
-                </button>
+                </button> -->
+                 <!-- <button class="btn w-100" style="background:rgba(16,185,129,0.1);border:1.5px solid rgba(16,185,129,0.4);color:#059669;border-radius:10px;font-weight:600;">
+                    <i class="fas fa-check-circle me-2"></i> Mark Fee Verified
+                </button> -->
                 @endif
             </form>
             @endif
