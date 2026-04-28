@@ -21,6 +21,8 @@ class Challan extends Model
             'bank_charges' => 'decimal:2',
             'total_amount' => 'decimal:2',
             'generated_at' => 'datetime',
+            'fee_verified_at' => 'datetime',
+            'is_fee_verified' => 'boolean',
         ];
     }
 
