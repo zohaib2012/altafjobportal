@@ -300,7 +300,7 @@
                                 <div class="col-12">
                                     <div class="form-group">
                                         <label>Address <span class="required">*</span></label>
-                                        <textarea name="address" class="form-control @error('address') is-invalid @enderror" rows="2" placeholder="Complete mailing address" required>{{ old('address') }}</textarea>
+                                        <textarea name="address" class="form-control @error('address') is-invalid @enderror" rows="2" placeholder="District" required>{{ old('address') }}</textarea>
                                         @error('address')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
                                 </div>
