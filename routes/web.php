@@ -199,21 +199,25 @@ Route::get('/quick-setup', function() {
 // Update positions table + seed 13 positions from advertisement
 Route::get('/update-positions', function() {
     try {
-        // Add new columns to positions if missing
-        $cols = DB::select("PRAGMA table_info('positions')");
-        $existing = array_column($cols, 'name');
-        if (!in_array('bps', $existing))                    DB::statement("ALTER TABLE positions ADD COLUMN bps VARCHAR DEFAULT NULL");
-        if (!in_array('vacancies', $existing))              DB::statement("ALTER TABLE positions ADD COLUMN vacancies INTEGER DEFAULT 0");
-        if (!in_array('age_limit', $existing))              DB::statement("ALTER TABLE positions ADD COLUMN age_limit VARCHAR DEFAULT NULL");
-        if (!in_array('qualification_required', $existing)) DB::statement("ALTER TABLE positions ADD COLUMN qualification_required VARCHAR DEFAULT NULL");
-        if (!in_array('domicile', $existing))               DB::statement("ALTER TABLE positions ADD COLUMN domicile VARCHAR DEFAULT NULL");
+        // Add new columns to positions if missing (works on MySQL + SQLite + PostgreSQL)
+        if (!Schema::hasColumn('positions', 'bps'))
+            Schema::table('positions', fn($t) => $t->string('bps')->nullable());
+        if (!Schema::hasColumn('positions', 'vacancies'))
+            Schema::table('positions', fn($t) => $t->integer('vacancies')->default(0));
+        if (!Schema::hasColumn('positions', 'age_limit'))
+            Schema::table('positions', fn($t) => $t->string('age_limit')->nullable());
+        if (!Schema::hasColumn('positions', 'qualification_required'))
+            Schema::table('positions', fn($t) => $t->string('qualification_required')->nullable());
+        if (!Schema::hasColumn('positions', 'domicile'))
+            Schema::table('positions', fn($t) => $t->string('domicile')->nullable());
 
         // Add fee verification columns to challans
-        $challanCols = DB::select("PRAGMA table_info('challans')");
-        $challanExisting = array_column($challanCols, 'name');
-        if (!in_array('is_fee_verified', $challanExisting))  DB::statement("ALTER TABLE challans ADD COLUMN is_fee_verified INTEGER DEFAULT 0");
-        if (!in_array('fee_verified_at', $challanExisting))  DB::statement("ALTER TABLE challans ADD COLUMN fee_verified_at DATETIME DEFAULT NULL");
-        if (!in_array('fee_verified_by', $challanExisting))  DB::statement("ALTER TABLE challans ADD COLUMN fee_verified_by INTEGER DEFAULT NULL");
+        if (!Schema::hasColumn('challans', 'is_fee_verified'))
+            Schema::table('challans', fn($t) => $t->boolean('is_fee_verified')->default(false));
+        if (!Schema::hasColumn('challans', 'fee_verified_at'))
+            Schema::table('challans', fn($t) => $t->timestamp('fee_verified_at')->nullable());
+        if (!Schema::hasColumn('challans', 'fee_verified_by'))
+            Schema::table('challans', fn($t) => $t->unsignedBigInteger('fee_verified_by')->nullable());
 
         // Clear old positions and insert 13 from advertisement
         DB::table('positions')->delete();
