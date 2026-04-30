@@ -155,11 +155,11 @@
                                     </tr>
                                     <tr>
                                         <td class="text-muted py-1">A/c Number</td>
-                                        <td class="fw-bold py-1">3513609247</td>
+                                        <td class="fw-bold py-1">02243513609247</td>
                                     </tr>
                                     <tr>
                                         <td class="text-muted py-1">IBAN</td>
-                                        <td class="fw-bold py-1" style="font-size: 0.75rem;">PK03NBPA0224003513609247</td>
+                                        <td class="fw-bold py-1" style="font-size: 0.75rem;">PK03NBPA02243513609247</td>
                                     </tr>
                                     <tr>
                                         <td class="text-muted py-1">Also Via</td>

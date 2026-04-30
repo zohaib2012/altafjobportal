@@ -36,6 +36,11 @@
                     <p class="text-muted small text-center mt-3 mb-0">
                         <i class="fas fa-info-circle me-1"></i> Use the email you provided in your application
                     </p>
+                    <div class="text-center mt-2">
+                        <a href="{{ route('forgot.password') }}" style="font-size:0.85rem;color:var(--royal-blue);">
+                            <i class="fas fa-key me-1"></i> Password bhool gaye?
+                        </a>
+                    </div>
                     <hr class="my-3">
                     <p class="text-center mb-0" style="font-size: 0.9rem;">
                         Pehli baar apply kar rahe hain?

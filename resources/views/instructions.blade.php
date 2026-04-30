@@ -71,7 +71,7 @@
                         </div>
                         <div>
                             <div class="fw-bold">Account Number</div>
-                            <small style="opacity: 0.85;">3513609247</small>
+                            <small style="opacity: 0.85;">02243513609247</small>
                         </div>
                     </div>
                     <div class="d-flex align-items-center gap-3 p-3" style="background: rgba(255,255,255,0.1); border-radius: 12px;">

@@ -117,8 +117,8 @@
     <div class="section-header">Bank Details</div>
     <div class="info-row"><div class="info-label">Bank Name:</div><div class="info-value">National Bank of Pakistan</div></div>
     <div class="info-row"><div class="info-label">Account Title:</div><div class="info-value">National EduPortal Hub</div></div>
-    <div class="info-row"><div class="info-label">Account No:</div><div class="info-value">3513609247</div></div>
-    <div class="info-row"><div class="info-label">IBAN:</div><div class="info-value">PK03NBPA0224003513609247</div></div>
+    <div class="info-row"><div class="info-label">Account No:</div><div class="info-value">02243513609247</div></div>
+    <div class="info-row"><div class="info-label">IBAN:</div><div class="info-value">PK03NBPA02243513609247</div></div>
 
     <div class="section-header">Payment Details</div>
     <div class="field-label">Deposit Date:</div>
@@ -181,8 +181,8 @@
     <div class="section-header">Bank Details</div>
     <div class="info-row"><div class="info-label">Bank Name:</div><div class="info-value">National Bank of Pakistan</div></div>
     <div class="info-row"><div class="info-label">Account Title:</div><div class="info-value">National EduPortal Hub</div></div>
-    <div class="info-row"><div class="info-label">Account No:</div><div class="info-value">3513609247</div></div>
-    <div class="info-row"><div class="info-label">IBAN:</div><div class="info-value">PK03NBPA0224003513609247</div></div>
+    <div class="info-row"><div class="info-label">Account No:</div><div class="info-value">02243513609247</div></div>
+    <div class="info-row"><div class="info-label">IBAN:</div><div class="info-value">PK03NBPA02243513609247</div></div>
 
     <div class="section-header">Payment Details</div>
     <div class="field-label">Deposit Date:</div>
@@ -245,8 +245,8 @@
     <div class="section-header">Bank Details</div>
     <div class="info-row"><div class="info-label">Bank Name:</div><div class="info-value">National Bank of Pakistan</div></div>
     <div class="info-row"><div class="info-label">Account Title:</div><div class="info-value">National EduPortal Hub</div></div>
-    <div class="info-row"><div class="info-label">Account No:</div><div class="info-value">3513609247</div></div>
-    <div class="info-row"><div class="info-label">IBAN:</div><div class="info-value">PK03NBPA0224003513609247</div></div>
+    <div class="info-row"><div class="info-label">Account No:</div><div class="info-value">02243513609247</div></div>
+    <div class="info-row"><div class="info-label">IBAN:</div><div class="info-value">PK03NBPA02243513609247</div></div>
 
     <div class="section-header">Payment Details</div>
     <div class="field-label">Deposit Date:</div>

@@ -24,10 +24,10 @@ class DashboardController extends Controller
                 'rejected'    => Application::where('status', 'rejected')->count(),
             ];
 
-            // Chart: applications per position
-            $positions      = Position::withCount('applications')->get();
-            $chartLabels    = $positions->pluck('title');
-            $chartData      = $positions->pluck('applications_count');
+            // Chart: active positions with at least 1 application
+            $positions   = Position::where('is_active', true)->withCount('applications')->get()->filter(fn($p) => $p->applications_count > 0)->values();
+            $chartLabels = $positions->pluck('title');
+            $chartData   = $positions->pluck('applications_count');
 
             // Chart: status breakdown
             $statusLabels = ['Pending', 'Shortlisted', 'Approved', 'Rejected'];

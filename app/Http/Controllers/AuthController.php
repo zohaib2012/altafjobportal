@@ -45,6 +45,41 @@ class AuthController extends Controller
         return redirect('/');
     }
 
+    public function showForgotPassword()
+    {
+        return view('auth.forgot-password');
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'cnic'  => 'required|string',
+        ]);
+
+        // Find application matching email + cnic
+        $application = Application::where('email', $request->email)
+            ->where('cnic', $request->cnic)
+            ->first();
+
+        if (!$application) {
+            return back()->withInput()->withErrors(['email' => 'Koi record nahi mila. Email ya CNIC galat hai.']);
+        }
+
+        // Find or get the user account
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return back()->withInput()->withErrors(['email' => 'Is email ka koi account nahi hai. Pehle apply karein.']);
+        }
+
+        // Generate new random password
+        $newPassword = 'NEPH-' . strtoupper(substr(md5(time()), 0, 6));
+        $user->update(['password' => Hash::make($newPassword)]);
+
+        return redirect()->route('forgot.password')->with('new_password', $newPassword);
+    }
+
     public function dashboard()
     {
         $user = Auth::user();

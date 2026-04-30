@@ -27,6 +27,8 @@ Route::get('/challan/{applicationId}/download', [ChallanController::class, 'down
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('forgot.password');
+Route::post('/forgot-password', [AuthController::class, 'resetPassword'])->name('forgot.password.reset');
 
 Route::get('/upload', [AuthController::class, 'dashboard'])->name('upload.dashboard')->middleware('auth');
 Route::get('/uploads', [AuthController::class, 'dashboard'])->name('uploads')->middleware('auth');
@@ -242,33 +244,55 @@ Route::get('/update-positions', function() {
 // Fix: Remove UNIQUE constraint on cnic so one person can apply for multiple positions
 Route::get('/fix-db', function() {
     try {
-        DB::statement('PRAGMA foreign_keys=off');
-        DB::statement('DROP TABLE IF EXISTS applications_temp');
-        DB::statement('CREATE TABLE applications_temp AS SELECT * FROM applications');
-        DB::statement('DROP TABLE IF EXISTS applications');
-        DB::statement('CREATE TABLE applications (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            application_id VARCHAR NOT NULL,
-            full_name VARCHAR NOT NULL,
-            father_name VARCHAR NOT NULL,
-            cnic VARCHAR NOT NULL,
-            date_of_birth DATE NOT NULL,
-            mobile VARCHAR NOT NULL,
-            email VARCHAR NOT NULL,
-            address TEXT NOT NULL,
-            qualification VARCHAR NOT NULL,
-            position_id INTEGER NOT NULL,
-            status VARCHAR NOT NULL DEFAULT \'pending\',
-            admin_notes TEXT,
-            created_at DATETIME,
-            updated_at DATETIME
-        )');
-        DB::statement('INSERT INTO applications SELECT * FROM applications_temp');
-        DB::statement('DROP TABLE IF EXISTS applications_temp');
-        DB::statement('PRAGMA foreign_keys=on');
-        return '<h2 style="color:green">✅ Fix Complete!</h2>
-                <p>CNIC unique constraint removed. Ab ek CNIC se multiple positions pe apply ho sakta hai.</p>
-                <a href="/apply">Go to Apply</a>';
+        $driver = DB::getDriverName();
+        $output = "<h2 style='color:green;font-family:sans-serif'>✅ Fix Complete!</h2>";
+
+        if ($driver === 'sqlite') {
+            DB::statement('PRAGMA foreign_keys=off');
+            DB::statement('DROP TABLE IF EXISTS applications_temp');
+            DB::statement('CREATE TABLE applications_temp AS SELECT * FROM applications');
+            DB::statement('DROP TABLE IF EXISTS applications');
+            DB::statement("CREATE TABLE applications (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                application_id VARCHAR NOT NULL,
+                full_name VARCHAR NOT NULL,
+                father_name VARCHAR NOT NULL,
+                cnic VARCHAR NOT NULL,
+                date_of_birth DATE NOT NULL,
+                mobile VARCHAR NOT NULL,
+                email VARCHAR NOT NULL,
+                address TEXT NOT NULL,
+                qualification VARCHAR NOT NULL,
+                position_id INTEGER NOT NULL,
+                status VARCHAR NOT NULL DEFAULT 'pending',
+                admin_notes TEXT,
+                created_at DATETIME,
+                updated_at DATETIME
+            )");
+            DB::statement('INSERT INTO applications SELECT * FROM applications_temp');
+            DB::statement('DROP TABLE IF EXISTS applications_temp');
+            DB::statement('PRAGMA foreign_keys=on');
+            $output .= '<p style="font-family:sans-serif">SQLite: CNIC unique constraint removed.</p>';
+
+        } elseif ($driver === 'mysql') {
+            // Drop any unique index on cnic column
+            $indexes = DB::select("SHOW INDEX FROM applications WHERE Column_name = 'cnic' AND Non_unique = 0");
+            foreach ($indexes as $index) {
+                DB::statement("ALTER TABLE applications DROP INDEX `{$index->Key_name}`");
+            }
+            $output .= '<p style="font-family:sans-serif">MySQL: CNIC unique constraint removed. (' . count($indexes) . ' index(es) dropped)</p>';
+
+        } elseif ($driver === 'pgsql') {
+            $indexes = DB::select("SELECT indexname FROM pg_indexes WHERE tablename='applications' AND indexdef LIKE '%cnic%'");
+            foreach ($indexes as $index) {
+                DB::statement("DROP INDEX IF EXISTS \"{$index->indexname}\"");
+            }
+            $output .= '<p style="font-family:sans-serif">PostgreSQL: CNIC unique constraint removed.</p>';
+        }
+
+        $output .= '<p style="font-family:sans-serif"><a href="/apply">Go to Apply</a> | <a href="/">Home</a></p>';
+        return $output;
+
     } catch (\Exception $e) {
         return '<h2 style="color:red">Error:</h2><p>' . $e->getMessage() . '</p>';
     }
