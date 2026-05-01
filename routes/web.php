@@ -260,14 +260,39 @@ Route::get('/fix-db', function() {
         $driver = DB::getDriverName();
         $output = "<h2 style='color:green;font-family:sans-serif'>✅ Fix Complete!</h2>";
 
-        if ($driver === 'sqlite') {
+        if ($driver === 'mysql') {
+            // Drop any unique index on cnic alone
+            $indexes = DB::select("SHOW INDEX FROM applications WHERE Column_name = 'cnic' AND Non_unique = 0");
+            foreach ($indexes as $index) {
+                DB::statement("ALTER TABLE applications DROP INDEX `{$index->Key_name}`");
+            }
+            $output .= '<p style="font-family:sans-serif">MySQL: CNIC unique constraint removed. (' . count($indexes) . ' index(es) dropped)</p>';
+
+            // Add composite unique on (cnic, position_id) so same person can apply to different positions but not same position twice
+            $composite = DB::select("SHOW INDEX FROM applications WHERE Key_name = 'cnic_position_unique'");
+            if (empty($composite)) {
+                DB::statement("ALTER TABLE applications ADD UNIQUE KEY `cnic_position_unique` (`cnic`, `position_id`)");
+                $output .= '<p style="font-family:sans-serif">MySQL: Composite unique (cnic + position) added.</p>';
+            } else {
+                $output .= '<p style="font-family:sans-serif">MySQL: Composite unique already exists.</p>';
+            }
+
+        } elseif ($driver === 'pgsql') {
+            $indexes = DB::select("SELECT indexname FROM pg_indexes WHERE tablename='applications' AND indexdef LIKE '%cnic%' AND indexdef NOT LIKE '%position%'");
+            foreach ($indexes as $index) {
+                DB::statement("DROP INDEX IF EXISTS \"{$index->indexname}\"");
+            }
+            DB::statement("CREATE UNIQUE INDEX IF NOT EXISTS cnic_position_unique ON applications(cnic, position_id)");
+            $output .= '<p style="font-family:sans-serif">PostgreSQL: CNIC unique removed, composite unique added.</p>';
+
+        } elseif ($driver === 'sqlite') {
             DB::statement('PRAGMA foreign_keys=off');
             DB::statement('DROP TABLE IF EXISTS applications_temp');
             DB::statement('CREATE TABLE applications_temp AS SELECT * FROM applications');
             DB::statement('DROP TABLE IF EXISTS applications');
             DB::statement("CREATE TABLE applications (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                application_id VARCHAR NOT NULL,
+                application_id VARCHAR NOT NULL UNIQUE,
                 full_name VARCHAR NOT NULL,
                 father_name VARCHAR NOT NULL,
                 cnic VARCHAR NOT NULL,
@@ -280,27 +305,13 @@ Route::get('/fix-db', function() {
                 status VARCHAR NOT NULL DEFAULT 'pending',
                 admin_notes TEXT,
                 created_at DATETIME,
-                updated_at DATETIME
+                updated_at DATETIME,
+                UNIQUE(cnic, position_id)
             )");
             DB::statement('INSERT INTO applications SELECT * FROM applications_temp');
             DB::statement('DROP TABLE IF EXISTS applications_temp');
             DB::statement('PRAGMA foreign_keys=on');
-            $output .= '<p style="font-family:sans-serif">SQLite: CNIC unique constraint removed.</p>';
-
-        } elseif ($driver === 'mysql') {
-            // Drop any unique index on cnic column
-            $indexes = DB::select("SHOW INDEX FROM applications WHERE Column_name = 'cnic' AND Non_unique = 0");
-            foreach ($indexes as $index) {
-                DB::statement("ALTER TABLE applications DROP INDEX `{$index->Key_name}`");
-            }
-            $output .= '<p style="font-family:sans-serif">MySQL: CNIC unique constraint removed. (' . count($indexes) . ' index(es) dropped)</p>';
-
-        } elseif ($driver === 'pgsql') {
-            $indexes = DB::select("SELECT indexname FROM pg_indexes WHERE tablename='applications' AND indexdef LIKE '%cnic%'");
-            foreach ($indexes as $index) {
-                DB::statement("DROP INDEX IF EXISTS \"{$index->indexname}\"");
-            }
-            $output .= '<p style="font-family:sans-serif">PostgreSQL: CNIC unique constraint removed.</p>';
+            $output .= '<p style="font-family:sans-serif">SQLite: CNIC unique removed, composite unique added.</p>';
         }
 
         $output .= '<p style="font-family:sans-serif"><a href="/apply">Go to Apply</a> | <a href="/">Home</a></p>';

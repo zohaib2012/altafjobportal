@@ -113,14 +113,16 @@ class ApplicationController extends Controller
                 return redirect()->route('apply.success');
             });
         } catch (\Illuminate\Database\QueryException $e) {
-            // UNIQUE constraint violation (SQLite error code 23000 / error 19)
-            if ($e->getCode() === '23000' || str_contains($e->getMessage(), 'UNIQUE constraint failed')) {
-                return back()->withInput()->withErrors([
-                    'cnic' => 'Aap ne is position ke liye pehle se apply kar rakha hai.',
-                ]);
+            $msg = $e->getMessage();
+            if ($e->getCode() === '23000' || str_contains($msg, 'UNIQUE constraint failed') || str_contains($msg, 'Duplicate entry')) {
+                if (str_contains($msg, 'cnic') || str_contains($msg, 'applications_cnic')) {
+                    return back()->withInput()->withErrors([
+                        'cnic' => 'Is CNIC se is position par pehle se application submit ho chuki hai.',
+                    ]);
+                }
             }
             return back()->withInput()->withErrors([
-                'general' => 'Database error. Dobara koshish karein.',
+                'general' => 'Database error: ' . $e->getMessage(),
             ]);
         } catch (\Exception $e) {
             return back()->withInput()->withErrors([
