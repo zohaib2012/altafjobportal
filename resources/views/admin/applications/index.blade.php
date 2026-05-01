@@ -160,11 +160,11 @@
     <div class="d-flex align-items-center gap-3">
         <span class="text-muted">Show:</span>
         <select class="form-select per-page-select" style="width: auto;">
-            <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
-            <option value="20" {{ request('per_page') == 20 ? 'selected' : '' }}>20</option>
-            <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
-            <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
-            <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
+            <option value="25"  {{ request('per_page', 50) == 25  ? 'selected' : '' }}>25</option>
+            <option value="50"  {{ request('per_page', 50) == 50  ? 'selected' : '' }}>50</option>
+            <option value="100" {{ request('per_page', 50) == 100 ? 'selected' : '' }}>100</option>
+            <option value="200" {{ request('per_page', 50) == 200 ? 'selected' : '' }}>200</option>
+            <option value="500" {{ request('per_page', 50) == 500 ? 'selected' : '' }}>500 (All)</option>
         </select>
         <span class="text-muted">per page</span>
     </div>

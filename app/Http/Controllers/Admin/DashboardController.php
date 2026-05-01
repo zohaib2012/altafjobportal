@@ -92,10 +92,10 @@ class DashboardController extends Controller
             $query->whereDate('created_at', '<=', $request->to_date);
         }
 
-        $perPage      = in_array($request->per_page, [10, 25, 50, 100]) ? $request->per_page : 20;
+        $perPage      = in_array((int)$request->per_page, [25, 50, 100, 200, 500]) ? (int)$request->per_page : 50;
         $applications = $query->orderBy('created_at', 'desc')
                               ->paginate($perPage)
-                              ->appends($request->query()); // ← fixes filter + pagination
+                              ->appends($request->query());
 
         $positions = Position::where('is_active', true)->get();
 
