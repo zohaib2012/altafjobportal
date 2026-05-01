@@ -219,26 +219,35 @@ Route::get('/update-positions', function() {
         if (!Schema::hasColumn('challans', 'fee_verified_by'))
             Schema::table('challans', fn($t) => $t->unsignedBigInteger('fee_verified_by')->nullable());
 
-        // Clear old positions and insert 13 from advertisement
-        DB::table('positions')->delete();
-        DB::table('positions')->insert([
-            ['title'=>'Controller',            'department'=>'Administration', 'bps'=>'Contract', 'vacancies'=>3,    'age_limit'=>'18-48', 'qualification_required'=>'MA',                            'domicile'=>'All over Sindh', 'fee_amount'=>450, 'is_active'=>1, 'created_at'=>now(), 'updated_at'=>now()],
-            ['title'=>'Managing Director',     'department'=>'Management',     'bps'=>'Contract', 'vacancies'=>6,    'age_limit'=>'18-45', 'qualification_required'=>'MA',                            'domicile'=>'All over Sindh', 'fee_amount'=>450, 'is_active'=>1, 'created_at'=>now(), 'updated_at'=>now()],
-            ['title'=>'Coordinator',           'department'=>'Coordination',   'bps'=>'Contract', 'vacancies'=>18,   'age_limit'=>'18-45', 'qualification_required'=>'Graduation',                    'domicile'=>'All over Sindh', 'fee_amount'=>450, 'is_active'=>1, 'created_at'=>now(), 'updated_at'=>now()],
-            ['title'=>'District Coordinator', 'department'=>'Coordination',   'bps'=>'Contract', 'vacancies'=>35,   'age_limit'=>'18-45', 'qualification_required'=>'Graduation',                    'domicile'=>'All over Sindh', 'fee_amount'=>450, 'is_active'=>1, 'created_at'=>now(), 'updated_at'=>now()],
-            ['title'=>'Monitoring Officer',    'department'=>'Monitoring',     'bps'=>'Contract', 'vacancies'=>300,  'age_limit'=>'18-45', 'qualification_required'=>'Intermediate',                  'domicile'=>'All over Sindh', 'fee_amount'=>450, 'is_active'=>1, 'created_at'=>now(), 'updated_at'=>now()],
-            ['title'=>'Assistant',             'department'=>'Administration', 'bps'=>'Contract', 'vacancies'=>370,  'age_limit'=>'18-45', 'qualification_required'=>'Intermediate',                  'domicile'=>'All over Sindh', 'fee_amount'=>450, 'is_active'=>1, 'created_at'=>now(), 'updated_at'=>now()],
-            ['title'=>'Clerk',                 'department'=>'Administration', 'bps'=>'Contract', 'vacancies'=>400,  'age_limit'=>'18-45', 'qualification_required'=>'Intermediate',                  'domicile'=>'All over Sindh', 'fee_amount'=>450, 'is_active'=>1, 'created_at'=>now(), 'updated_at'=>now()],
-            ['title'=>'Data Entry Operator',   'department'=>'IT',             'bps'=>'Contract', 'vacancies'=>200,  'age_limit'=>'18-45', 'qualification_required'=>'Intermediate + MS Certificate', 'domicile'=>'All over Sindh', 'fee_amount'=>450, 'is_active'=>1, 'created_at'=>now(), 'updated_at'=>now()],
-            ['title'=>'Field Officer',         'department'=>'Field',          'bps'=>'Contract', 'vacancies'=>1600, 'age_limit'=>'18-45', 'qualification_required'=>'Intermediate',                  'domicile'=>'All over Sindh', 'fee_amount'=>450, 'is_active'=>1, 'created_at'=>now(), 'updated_at'=>now()],
-            ['title'=>'Instructor/Teacher',    'department'=>'Education',      'bps'=>'Contract', 'vacancies'=>2500, 'age_limit'=>'18-45', 'qualification_required'=>'Matric/Intermediate',           'domicile'=>'All over Sindh', 'fee_amount'=>450, 'is_active'=>1, 'created_at'=>now(), 'updated_at'=>now()],
-            ['title'=>'Supporting Staff',      'department'=>'Support',        'bps'=>'Contract', 'vacancies'=>1500, 'age_limit'=>'18-45', 'qualification_required'=>'Primary',                       'domicile'=>'All over Sindh', 'fee_amount'=>450, 'is_active'=>1, 'created_at'=>now(), 'updated_at'=>now()],
-            ['title'=>'Driver',                'department'=>'Transport',      'bps'=>'Contract', 'vacancies'=>30,   'age_limit'=>'18-30', 'qualification_required'=>'Having License',                'domicile'=>'All over Sindh', 'fee_amount'=>450, 'is_active'=>1, 'created_at'=>now(), 'updated_at'=>now()],
-            ['title'=>'Cook',                  'department'=>'Support',        'bps'=>'Contract', 'vacancies'=>15,   'age_limit'=>'18-45', 'qualification_required'=>'Educated',                      'domicile'=>'All over Sindh', 'fee_amount'=>450, 'is_active'=>1, 'created_at'=>now(), 'updated_at'=>now()],
-        ]);
+        // Update positions safely — never delete (would cascade-delete applications)
+        $positionData = [
+            ['title'=>'Controller',            'department'=>'Administration', 'bps'=>'Contract', 'vacancies'=>3,    'age_limit'=>'18-48', 'qualification_required'=>'MA',                            'domicile'=>'All over Sindh', 'fee_amount'=>450, 'is_active'=>1],
+            ['title'=>'Managing Director',     'department'=>'Management',     'bps'=>'Contract', 'vacancies'=>6,    'age_limit'=>'18-45', 'qualification_required'=>'MA',                            'domicile'=>'All over Sindh', 'fee_amount'=>450, 'is_active'=>1],
+            ['title'=>'Coordinator',           'department'=>'Coordination',   'bps'=>'Contract', 'vacancies'=>18,   'age_limit'=>'18-45', 'qualification_required'=>'Graduation',                    'domicile'=>'All over Sindh', 'fee_amount'=>450, 'is_active'=>1],
+            ['title'=>'District Coordinator',  'department'=>'Coordination',   'bps'=>'Contract', 'vacancies'=>35,   'age_limit'=>'18-45', 'qualification_required'=>'Graduation',                    'domicile'=>'All over Sindh', 'fee_amount'=>450, 'is_active'=>1],
+            ['title'=>'Monitoring Officer',    'department'=>'Monitoring',     'bps'=>'Contract', 'vacancies'=>300,  'age_limit'=>'18-45', 'qualification_required'=>'Intermediate',                  'domicile'=>'All over Sindh', 'fee_amount'=>450, 'is_active'=>1],
+            ['title'=>'Assistant',             'department'=>'Administration', 'bps'=>'Contract', 'vacancies'=>370,  'age_limit'=>'18-45', 'qualification_required'=>'Intermediate',                  'domicile'=>'All over Sindh', 'fee_amount'=>450, 'is_active'=>1],
+            ['title'=>'Clerk',                 'department'=>'Administration', 'bps'=>'Contract', 'vacancies'=>400,  'age_limit'=>'18-45', 'qualification_required'=>'Intermediate',                  'domicile'=>'All over Sindh', 'fee_amount'=>450, 'is_active'=>1],
+            ['title'=>'Data Entry Operator',   'department'=>'IT',             'bps'=>'Contract', 'vacancies'=>200,  'age_limit'=>'18-45', 'qualification_required'=>'Intermediate + MS Certificate', 'domicile'=>'All over Sindh', 'fee_amount'=>450, 'is_active'=>1],
+            ['title'=>'Field Officer',         'department'=>'Field',          'bps'=>'Contract', 'vacancies'=>1600, 'age_limit'=>'18-45', 'qualification_required'=>'Intermediate',                  'domicile'=>'All over Sindh', 'fee_amount'=>450, 'is_active'=>1],
+            ['title'=>'Instructor/Teacher',    'department'=>'Education',      'bps'=>'Contract', 'vacancies'=>2500, 'age_limit'=>'18-45', 'qualification_required'=>'Matric/Intermediate',           'domicile'=>'All over Sindh', 'fee_amount'=>450, 'is_active'=>1],
+            ['title'=>'Supporting Staff',      'department'=>'Support',        'bps'=>'Contract', 'vacancies'=>1500, 'age_limit'=>'18-45', 'qualification_required'=>'Primary',                       'domicile'=>'All over Sindh', 'fee_amount'=>450, 'is_active'=>1],
+            ['title'=>'Driver',                'department'=>'Transport',      'bps'=>'Contract', 'vacancies'=>30,   'age_limit'=>'18-30', 'qualification_required'=>'Having License',                'domicile'=>'All over Sindh', 'fee_amount'=>450, 'is_active'=>1],
+            ['title'=>'Cook',                  'department'=>'Support',        'bps'=>'Contract', 'vacancies'=>15,   'age_limit'=>'18-45', 'qualification_required'=>'Educated',                      'domicile'=>'All over Sindh', 'fee_amount'=>450, 'is_active'=>1],
+        ];
+
+        foreach ($positionData as $data) {
+            \App\Models\Position::updateOrCreate(
+                ['title' => $data['title']],
+                array_merge($data, ['updated_at' => now()])
+            );
+        }
+        // Deactivate any old positions not in the new list
+        $newTitles = array_column($positionData, 'title');
+        \App\Models\Position::whereNotIn('title', $newTitles)->update(['is_active' => 0]);
 
         return '<h2 style="color:green;font-family:sans-serif">✅ Done!</h2>
-                <p style="font-family:sans-serif">Positions updated (13 positions), new DB columns added.</p>
+                <p style="font-family:sans-serif">Positions updated safely (13 positions). Applications NOT deleted.</p>
                 <p><a href="/admin">Go to Admin Panel</a> | <a href="/">Go to Home</a></p>';
     } catch (\Exception $e) {
         return '<h2 style="color:red">Error:</h2><p>' . $e->getMessage() . '</p>';
