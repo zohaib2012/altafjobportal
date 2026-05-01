@@ -261,20 +261,31 @@ Route::get('/fix-db', function() {
         $output = "<h2 style='color:green;font-family:sans-serif'>✅ Fix Complete!</h2>";
 
         if ($driver === 'mysql') {
-            // Drop any unique index on cnic alone
-            $indexes = DB::select("SHOW INDEX FROM applications WHERE Column_name = 'cnic' AND Non_unique = 0");
-            foreach ($indexes as $index) {
-                DB::statement("ALTER TABLE applications DROP INDEX `{$index->Key_name}`");
+            // Drop ONLY the single-column cnic unique (not composite ones)
+            $singleCnicIndexes = DB::select("
+                SELECT s.Key_name FROM information_schema.STATISTICS s
+                WHERE s.TABLE_SCHEMA = DATABASE()
+                  AND s.TABLE_NAME = 'applications'
+                  AND s.Non_unique = 0
+                  AND s.Column_name = 'cnic'
+                  AND (SELECT COUNT(*) FROM information_schema.STATISTICS s2
+                       WHERE s2.TABLE_SCHEMA = DATABASE()
+                         AND s2.TABLE_NAME = 'applications'
+                         AND s2.Key_name = s.Key_name) = 1
+            ");
+            foreach ($singleCnicIndexes as $idx) {
+                DB::statement("ALTER TABLE applications DROP INDEX `{$idx->Key_name}`");
             }
-            $output .= '<p style="font-family:sans-serif">MySQL: CNIC unique constraint removed. (' . count($indexes) . ' index(es) dropped)</p>';
+            $dropped = count($singleCnicIndexes);
+            $output .= '<p style="font-family:sans-serif">MySQL: Single-column CNIC unique removed. (' . $dropped . ' dropped)</p>';
 
-            // Add composite unique on (cnic, position_id) so same person can apply to different positions but not same position twice
+            // Add composite unique on (cnic, position_id) — allows same CNIC on different positions
             $composite = DB::select("SHOW INDEX FROM applications WHERE Key_name = 'cnic_position_unique'");
             if (empty($composite)) {
                 DB::statement("ALTER TABLE applications ADD UNIQUE KEY `cnic_position_unique` (`cnic`, `position_id`)");
-                $output .= '<p style="font-family:sans-serif">MySQL: Composite unique (cnic + position) added.</p>';
+                $output .= '<p style="font-family:sans-serif">MySQL: Composite unique (cnic + position_id) added. ✅</p>';
             } else {
-                $output .= '<p style="font-family:sans-serif">MySQL: Composite unique already exists.</p>';
+                $output .= '<p style="font-family:sans-serif">MySQL: Composite unique already exists. ✅</p>';
             }
 
         } elseif ($driver === 'pgsql') {
