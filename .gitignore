@@ -18,3 +18,8 @@ yarn-error.log
 /.idea
 /.vscode
 nul
+*.sql
+*.sql.gz
+*.tar.gz
+backup_database.sql
+extract.php

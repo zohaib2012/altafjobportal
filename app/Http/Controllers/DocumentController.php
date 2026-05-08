@@ -128,6 +128,69 @@ class DocumentController extends Controller
         return redirect()->route('home')->with('success', 'Documents successfully uploaded! Admin will verify and update your status.');
     }
 
+    public function uploadForApplication(Request $request, $applicationId)
+    {
+        $user = Auth::user();
+
+        // Verify this application belongs to the logged-in user
+        $application = \App\Models\Application::where('id', $applicationId)
+            ->where('email', $user->email)
+            ->firstOrFail();
+
+        $documents = $application->documents;
+        if (!$documents) {
+            $documents = \App\Models\Document::create(['application_id' => $application->id]);
+        }
+
+        $rules = [];
+        if ($request->hasFile('cv')) {
+            $rules['cv'] = 'file|mimes:pdf|max:5120';
+        }
+        if ($request->hasFile('challan')) {
+            $rules['challan'] = 'file|mimes:pdf,jpg,jpeg,png|max:5120';
+        }
+
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
+
+        $updates = [];
+
+        if ($request->hasFile('cv')) {
+            if ($documents->cv_path && Storage::exists($documents->cv_path)) {
+                Storage::delete($documents->cv_path);
+            }
+            $file = $request->file('cv');
+            $updates['cv_path']          = $file->store('uploads/cvs');
+            $updates['cv_original_name'] = $file->getClientOriginalName();
+            $updates['cv_size']          = $file->getSize();
+            $updates['cv_uploaded_at']   = now();
+        }
+
+        if ($request->hasFile('challan')) {
+            if ($documents->challan_path && Storage::exists($documents->challan_path)) {
+                Storage::delete($documents->challan_path);
+            }
+            $file = $request->file('challan');
+            $updates['challan_path']          = $file->store('uploads/challans');
+            $updates['challan_original_name'] = $file->getClientOriginalName();
+            $updates['challan_size']          = $file->getSize();
+            $updates['challan_uploaded_at']   = now();
+        }
+
+        if (!empty($updates)) {
+            $documents->update($updates);
+            // If either CV or challan uploaded and status is still pending → mark approved
+            $freshDocs = $documents->fresh();
+            if ($application->status === 'pending' && ($freshDocs->cv_path || $freshDocs->challan_path)) {
+                $application->update(['status' => 'approved']);
+            }
+        }
+
+        return back()->with('success', 'Documents upload ho gaye! Application: ' . $application->application_id);
+    }
+
     public function download($path)
     {
         if (!Storage::exists($path)) {

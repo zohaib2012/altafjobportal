@@ -89,9 +89,9 @@ class AuthController extends Controller
         $documents   = $application?->documents ?? null;
         $challan     = $application?->challan ?? null;
 
-        // All applications by this email (for history list)
+        // All applications by this email (for history list + upload)
         $allApplications = \App\Models\Application::where('email', $user->email)
-            ->with('position', 'challan')
+            ->with('position', 'challan', 'documents')
             ->orderBy('created_at', 'desc')
             ->get();
 

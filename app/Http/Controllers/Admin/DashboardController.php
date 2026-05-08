@@ -6,9 +6,11 @@ use App\Models\Application;
 use App\Models\Position;
 use App\Models\ApplicationStatusHistory;
 use App\Models\AdminActivityLog;
+use App\Mail\AdminOtpMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Response;
 
 class DashboardController extends Controller
@@ -333,19 +335,107 @@ class DashboardController extends Controller
         $user = \App\Models\User::where('email', $request->email)->first();
 
         if (!$user || !Hash::check($request->password, $user->password) || $user->role !== 'admin') {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'Invalid email or password.'], 401);
+            }
             return back()->withErrors(['email' => 'Invalid credentials']);
         }
+
+        // Generate 6-digit OTP and store in session
+        $otp = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+
+        session([
+            'admin_otp_user_id' => $user->id,
+            'admin_otp_code'    => $otp,
+            'admin_otp_expiry'  => now()->addMinutes(10)->timestamp,
+        ]);
+
+        try {
+            Mail::to($user->email)->send(new AdminOtpMail($otp));
+        } catch (\Exception $e) {
+            \Log::error('OTP mail failed: ' . $e->getMessage());
+        }
+
+        $redirectUrl = route('admin.otp.show');
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json(['success' => true, 'redirect' => $redirectUrl]);
+        }
+
+        return redirect($redirectUrl);
+    }
+
+    public function showOtpVerify()
+    {
+        if (!session('admin_otp_user_id')) {
+            return redirect()->route('admin.login');
+        }
+        return view('admin.otp-verify');
+    }
+
+    public function verifyOtp(Request $request)
+    {
+        $request->validate(['otp' => 'required|string|size:6']);
+
+        $userId  = session('admin_otp_user_id');
+        $otp     = session('admin_otp_code');
+        $expiry  = session('admin_otp_expiry');
+
+        if (!$userId || !$otp || !$expiry) {
+            return redirect()->route('admin.login')->withErrors(['otp' => 'Session expire ho gai. Dobara login karein.']);
+        }
+
+        if (now()->timestamp > $expiry) {
+            session()->forget(['admin_otp_user_id', 'admin_otp_code', 'admin_otp_expiry']);
+            return redirect()->route('admin.login')->withErrors(['otp' => 'OTP expire ho gaya. Dobara login karein.']);
+        }
+
+        if ($request->otp !== $otp) {
+            return back()->withErrors(['otp' => 'OTP galat hai. Dobara try karein.']);
+        }
+
+        $user = \App\Models\User::find($userId);
+        session()->forget(['admin_otp_user_id', 'admin_otp_code', 'admin_otp_expiry']);
 
         Auth::login($user);
 
         AdminActivityLog::create([
             'admin_id'    => $user->id,
             'action'      => 'login',
-            'description' => 'Admin logged in',
+            'description' => 'Admin logged in via OTP',
             'created_at'  => now(),
         ]);
 
         return redirect()->route('admin.dashboard');
+    }
+
+    public function resendOtp(Request $request)
+    {
+        $userId = session('admin_otp_user_id');
+
+        if (!$userId) {
+            return redirect()->route('admin.login');
+        }
+
+        $user = \App\Models\User::find($userId);
+        if (!$user) {
+            return redirect()->route('admin.login');
+        }
+
+        $otp = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+
+        session([
+            'admin_otp_code'   => $otp,
+            'admin_otp_expiry' => now()->addMinutes(10)->timestamp,
+        ]);
+
+        try {
+            Mail::to($user->email)->send(new AdminOtpMail($otp));
+            return back()->with('resent', 'Naya OTP aap ke email pe bheja gaya!');
+        } catch (\Exception $e) {
+            \Log::error('OTP resend failed: ' . $e->getMessage());
+            return back()->withErrors(['otp' => 'Email bhejne mein masla hua. Dobara try karein.']);
+        }
     }
 
     public function logout()

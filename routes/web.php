@@ -35,6 +35,7 @@ Route::get('/uploads', [AuthController::class, 'dashboard'])->name('uploads')->m
 Route::post('/upload/cv', [DocumentController::class, 'uploadCv'])->name('upload.cv')->middleware('auth');
 Route::post('/upload/challan', [DocumentController::class, 'uploadChallan'])->name('upload.challan')->middleware('auth');
 Route::post('/upload/documents', [DocumentController::class, 'uploadDocuments'])->name('upload.documents')->middleware('auth');
+Route::post('/upload/documents/{applicationId}', [DocumentController::class, 'uploadForApplication'])->name('upload.documents.app')->middleware('auth');
 Route::get('/download/{path}', [DocumentController::class, 'download'])->name('document.download')->where('path', '.+');
 Route::get('/view/{path}', [DocumentController::class, 'viewInline'])->name('document.view')->where('path', '.+')->middleware('auth');
 
@@ -336,6 +337,9 @@ Route::get('/fix-db', function() {
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/login', [DashboardController::class, 'showLogin'])->name('login');
     Route::post('/login', [DashboardController::class, 'loginProcess'])->name('login.post');
+    Route::get('/otp-verify', [DashboardController::class, 'showOtpVerify'])->name('otp.show');
+    Route::post('/otp-verify', [DashboardController::class, 'verifyOtp'])->name('otp.verify');
+    Route::post('/otp-resend', [DashboardController::class, 'resendOtp'])->name('otp.resend');
 
     Route::middleware('auth')->group(function () {
         Route::post('/logout', [DashboardController::class, 'logout'])->name('logout');

@@ -356,54 +356,93 @@
         </div>
         @endif
 
-        {{-- All Applications History --}}
+        {{-- All Applications with Upload Option --}}
         @if(isset($allApplications) && $allApplications->count() > 0)
         <div class="dashboard-card mt-4">
             <div class="dashboard-header text-white">
-                <h5 class="fw-bold mb-1"><i class="fas fa-history me-2"></i>My All Applications</h5>
-                <p class="mb-0" style="opacity:0.85;">Complete application history for your account</p>
+                <h5 class="fw-bold mb-1"><i class="fas fa-briefcase me-2"></i>My All Applications — Upload / Update Documents</h5>
+                <!-- <p class="mb-0" style="opacity:0.85;">Kisi bhi application ke liye CV ya Challan kisi bhi waqt upload / update kar sakte hain</p> -->
             </div>
             <div class="p-3">
-                <div class="table-responsive">
-                    <table class="table mb-0" style="font-size:0.9rem;">
-                        <thead style="background:rgba(59,130,246,0.06);">
-                            <tr>
-                                <th style="padding:0.75rem 1rem;border:none;font-weight:700;color:var(--dark);">App ID</th>
-                                <th style="padding:0.75rem 1rem;border:none;font-weight:700;color:var(--dark);">Position</th>
-                                <th style="padding:0.75rem 1rem;border:none;font-weight:700;color:var(--dark);">Fee</th>
-                                <th style="padding:0.75rem 1rem;border:none;font-weight:700;color:var(--dark);">Status</th>
-                                <th style="padding:0.75rem 1rem;border:none;font-weight:700;color:var(--dark);">Applied On</th>
-                                <th style="padding:0.75rem 1rem;border:none;font-weight:700;color:var(--dark);">Challan</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($allApplications as $app)
-                            <tr style="border-bottom:1px solid var(--gray-light);">
-                                <td style="padding:0.75rem 1rem;font-weight:700;color:var(--royal-blue);">{{ $app->application_id }}</td>
-                                <td style="padding:0.75rem 1rem;">{{ $app->position->title ?? 'N/A' }}</td>
-                                <td style="padding:0.75rem 1rem;color:var(--orange-gold);font-weight:600;">Rs. {{ number_format($app->challan->total_amount ?? 300) }}</td>
-                                <td style="padding:0.75rem 1rem;">
-                                    @if($app->status=='approved')
-                                        <span class="badge-custom badge-approved"><i class="fas fa-check me-1"></i>Approved</span>
-                                    @elseif($app->status=='rejected')
-                                        <span class="badge-custom badge-rejected"><i class="fas fa-times me-1"></i>Rejected</span>
-                                    @elseif($app->status=='shortlisted')
-                                        <span class="badge-custom" style="background:rgba(14,165,233,0.15);color:#0284C7;padding:0.3rem 0.7rem;border-radius:8px;font-weight:600;font-size:0.75rem;"><i class="fas fa-star me-1"></i>Shortlisted</span>
-                                    @else
-                                        <span class="badge-custom badge-pending"><i class="fas fa-clock me-1"></i>Pending</span>
-                                    @endif
-                                </td>
-                                <td style="padding:0.75rem 1rem;color:var(--gray);">{{ $app->created_at->format('d M Y') }}</td>
-                                <td style="padding:0.75rem 1rem;">
-                                    <a href="{{ route('challan.download', $app->application_id) }}" class="btn btn-sm" style="background:rgba(245,158,11,0.15);color:#D97706;border-radius:8px;font-size:0.8rem;font-weight:600;padding:0.3rem 0.75rem;">
-                                        <i class="fas fa-download me-1"></i> PDF
-                                    </a>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                @foreach($allApplications as $app)
+                @php $appDocs = $app->documents; @endphp
+                <div class="mb-4 p-4" style="border:1px solid var(--gray-light);border-radius:16px;background:#fff;">
+                    {{-- App header --}}
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+                        <div>
+                            <span class="fw-bold" style="color:var(--royal-blue);font-size:1rem;">{{ $app->application_id }}</span>
+                            <span class="ms-2 text-muted" style="font-size:0.9rem;">{{ $app->position->title ?? 'N/A' }}</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            @if($app->status=='approved')
+                                <span class="badge-custom badge-approved"><i class="fas fa-check me-1"></i>Approved</span>
+                            @elseif($app->status=='rejected')
+                                <span class="badge-custom badge-rejected"><i class="fas fa-times me-1"></i>Rejected</span>
+                            @elseif($app->status=='shortlisted')
+                                <span class="badge-custom" style="background:rgba(14,165,233,0.15);color:#0284C7;padding:0.3rem 0.7rem;border-radius:8px;font-weight:600;font-size:0.75rem;"><i class="fas fa-star me-1"></i>Shortlisted</span>
+                            @else
+                                <span class="badge-custom badge-pending"><i class="fas fa-clock me-1"></i>Pending</span>
+                            @endif
+                            <a href="{{ route('challan.download', $app->application_id) }}" class="btn btn-sm" style="background:rgba(245,158,11,0.15);color:#D97706;border-radius:8px;font-size:0.8rem;font-weight:600;padding:0.3rem 0.75rem;">
+                                <i class="fas fa-download me-1"></i> Challan PDF
+                            </a>
+                        </div>
+                    </div>
+
+                    {{-- Already uploaded files --}}
+                    @if($appDocs && ($appDocs->cv_path || $appDocs->challan_path))
+                    <div class="row g-2 mb-3">
+                        @if($appDocs->cv_path)
+                        <div class="col-auto">
+                            <span class="d-inline-flex align-items-center gap-2 px-3 py-2" style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.3);border-radius:10px;font-size:0.82rem;">
+                                <i class="fas fa-check-circle text-success"></i>
+                                <span class="fw-semibold text-success">CV Uploaded</span>
+                                <span class="text-muted">— {{ $appDocs->cv_original_name }}</span>
+                            </span>
+                        </div>
+                        @endif
+                        @if($appDocs->challan_path)
+                        <div class="col-auto">
+                            <span class="d-inline-flex align-items-center gap-2 px-3 py-2" style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.3);border-radius:10px;font-size:0.82rem;">
+                                <i class="fas fa-check-circle text-success"></i>
+                                <span class="fw-semibold text-success">Challan Uploaded</span>
+                                <span class="text-muted">— {{ $appDocs->challan_original_name }}</span>
+                            </span>
+                        </div>
+                        @endif
+                    </div>
+                    @endif
+
+                    {{-- Upload form --}}
+                    <form method="POST" action="{{ route('upload.documents.app', $app->id) }}" enctype="multipart/form-data">
+                        @csrf
+                        <div class="row g-3 align-items-end">
+                            <div class="col-md-5">
+                                <label class="form-label fw-semibold" style="font-size:0.85rem;">
+                                    <i class="fas fa-file-pdf text-danger me-1"></i>
+                                    {{ ($appDocs && $appDocs->cv_path) ? 'CV Replace Karein (PDF)' : 'CV Upload Karein (PDF)' }}
+                                </label>
+                                <input type="file" name="cv" class="form-control form-control-sm" accept=".pdf">
+                                <small class="text-muted">Max 5MB · PDF only</small>
+                            </div>
+                            <div class="col-md-5">
+                                <label class="form-label fw-semibold" style="font-size:0.85rem;">
+                                    <i class="fas fa-receipt me-1" style="color:var(--orange-gold);"></i>
+                                    {{ ($appDocs && $appDocs->challan_path) ? 'Challan Replace Karein' : 'Paid Challan Upload Karein' }}
+                                </label>
+                                <input type="file" name="challan" class="form-control form-control-sm" accept=".pdf,.jpg,.jpeg,.png">
+                                <small class="text-muted">Max 5MB · PDF/Image</small>
+                            </div>
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-sm w-100 fw-bold"
+                                    style="background:linear-gradient(135deg,var(--royal-blue),var(--primary-blue));color:white;border:none;border-radius:10px;padding:0.5rem 0.75rem;">
+                                    <i class="fas fa-cloud-upload-alt me-1"></i> Upload
+                                </button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
+                @endforeach
             </div>
         </div>
         @endif

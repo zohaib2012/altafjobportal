@@ -195,40 +195,42 @@
     <script>
     document.getElementById('loginForm').addEventListener('submit', async function(e) {
         e.preventDefault();
-        
-        const email = document.getElementById('email').value;
+
+        const email    = document.getElementById('email').value;
         const password = document.getElementById('password').value;
-        const token = document.getElementById('csrfToken').value;
-        const btn = document.getElementById('submitBtn');
+        const token    = document.getElementById('csrfToken').value;
+        const btn      = document.getElementById('submitBtn');
         const errorBox = document.getElementById('errorBox');
         const errorMsg = document.getElementById('errorMsg');
-        
+
         btn.disabled = true;
         btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Logging in...';
         errorBox.classList.remove('show');
-        
+
         try {
             const response = await fetch('/admin/login', {
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': token,
                     'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json',
                 },
-                body: 'email=' + encodeURIComponent(email) + '&password=' + encodeURIComponent(password) + '&_token=' + encodeURIComponent(token)
+                body: 'email=' + encodeURIComponent(email) +
+                      '&password=' + encodeURIComponent(password) +
+                      '&_token=' + encodeURIComponent(token)
             });
-            
-            if (response.ok || response.redirected) {
-                window.location.href = '/admin';
+
+            const data = await response.json();
+
+            if (data.success && data.redirect) {
+                btn.innerHTML = '<i class="fas fa-check me-2"></i> OTP Bheja Ja Raha Hai...';
+                window.location.href = data.redirect;
             } else {
-                const html = await response.text();
-                if (html.includes('dashboard') || html.includes('Admin Panel') === false) {
-                    window.location.href = '/admin';
-                } else {
-                    errorMsg.innerHTML = 'Invalid credentials. Please try again.';
-                    errorBox.classList.add('show');
-                    btn.disabled = false;
-                    btn.innerHTML = '<i class="fas fa-sign-in-alt me-2"></i> Login';
-                }
+                errorMsg.innerHTML = data.message || 'Invalid email or password.';
+                errorBox.classList.add('show');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-sign-in-alt me-2"></i> Login';
             }
         } catch (error) {
             errorMsg.textContent = 'An error occurred. Please try again.';

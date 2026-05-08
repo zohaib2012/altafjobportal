@@ -46,6 +46,8 @@ class ApplicationController extends Controller
             'address'       => 'required|string',
             'qualification' => 'required|string|max:200',
             'position_id'   => 'required|exists:positions,id',
+            'cv'            => 'nullable|file|mimes:pdf|max:5120',
+            'challan'       => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
         ]);
 
         if ($validator->fails()) {
@@ -63,6 +65,26 @@ class ApplicationController extends Controller
                 $newNum        = $lastApp ? str_pad((int)substr($lastApp->application_id, -5) + 1, 5, '0', STR_PAD_LEFT) : '00001';
                 $applicationId = "NEPH-{$year}-{$newNum}";
 
+                // Handle optional on-spot file uploads
+                $cvPath      = null; $cvName      = null; $cvSize      = null;
+                $challanPath = null; $challanName = null; $challanSize = null;
+
+                if ($request->hasFile('cv')) {
+                    $f = $request->file('cv');
+                    $cvPath = $f->store('uploads/cvs');
+                    $cvName = $f->getClientOriginalName();
+                    $cvSize = $f->getSize();
+                }
+                if ($request->hasFile('challan')) {
+                    $f = $request->file('challan');
+                    $challanPath = $f->store('uploads/challans');
+                    $challanName = $f->getClientOriginalName();
+                    $challanSize = $f->getSize();
+                }
+
+                // Auto-approve if any document uploaded on the spot
+                $initialStatus = ($cvPath || $challanPath) ? 'approved' : 'pending';
+
                 $application = Application::create([
                     'application_id' => $applicationId,
                     'full_name'      => $validated['full_name'],
@@ -74,7 +96,7 @@ class ApplicationController extends Controller
                     'address'        => $validated['address'],
                     'qualification'  => $validated['qualification'],
                     'position_id'    => $validated['position_id'],
-                    'status'         => 'pending',
+                    'status'         => $initialStatus,
                 ]);
 
                 $position = Position::find($validated['position_id']);
@@ -88,7 +110,17 @@ class ApplicationController extends Controller
                     'generated_at'   => now(),
                 ]);
 
-                Document::create(['application_id' => $application->id]);
+                Document::create([
+                    'application_id'       => $application->id,
+                    'cv_path'              => $cvPath,
+                    'cv_original_name'     => $cvName,
+                    'cv_size'              => $cvSize,
+                    'cv_uploaded_at'       => $cvPath ? now() : null,
+                    'challan_path'         => $challanPath,
+                    'challan_original_name'=> $challanName,
+                    'challan_size'         => $challanSize,
+                    'challan_uploaded_at'  => $challanPath ? now() : null,
+                ]);
 
                 $existingUser = User::where('email', $validated['email'])->where('role', 'candidate')->first();
                 $password     = null;
