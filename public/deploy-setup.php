@@ -31,14 +31,28 @@ try {
 
 // ── 2. Admin Email Update ─────────────────────────────────
 try {
-    $admin = \App\Models\User::where('role', 'admin')->first();
-    if ($admin) {
-        $oldEmail = $admin->email;
-        $admin->email = 'altafhussainbirhmani376@gmail.com';
-        $admin->save();
-        $output .= '<p style="color:green">✅ Admin email updated: <b>' . $oldEmail . '</b> → <b>' . $admin->email . '</b></p>';
+    $targetEmail = 'altafhussainbirhmani376@gmail.com';
+    $existing    = \App\Models\User::where('email', $targetEmail)->first();
+    $currentAdmin = \App\Models\User::where('role', 'admin')->first();
+
+    if ($existing && $existing->role === 'admin') {
+        $output .= '<p style="color:green">✅ Admin email already set to <b>' . $targetEmail . '</b> — no change needed.</p>';
+    } elseif ($existing && $existing->role === 'candidate') {
+        // Promote this candidate to admin, copy password from old admin
+        $adminPassword = $currentAdmin ? $currentAdmin->password : $existing->password;
+        $existing->update([
+            'role'           => 'admin',
+            'name'           => 'Admin',
+            'password'       => $adminPassword,
+            'application_id' => null,
+        ]);
+        $output .= '<p style="color:green">✅ <b>' . $targetEmail . '</b> ko admin promote kiya gaya (password same rakha).</p>';
+    } elseif ($currentAdmin) {
+        $oldEmail = $currentAdmin->email;
+        $currentAdmin->update(['email' => $targetEmail]);
+        $output .= '<p style="color:green">✅ Admin email updated: <b>' . $oldEmail . '</b> → <b>' . $targetEmail . '</b></p>';
     } else {
-        $output .= '<p style="color:orange">⚠️ Admin user not found — email not updated.</p>';
+        $output .= '<p style="color:orange">⚠️ Admin user not found.</p>';
     }
 } catch (Exception $e) {
     $errors[] = 'Admin email: ' . $e->getMessage();
