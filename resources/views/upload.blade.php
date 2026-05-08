@@ -418,18 +418,10 @@
                         @csrf
                         <div class="row g-3 align-items-end">
                             <div class="col-md-5">
-                                <label class="form-label fw-semibold" style="font-size:0.85rem;">
-                                    <i class="fas fa-file-pdf text-danger me-1"></i>
-                                    {{ ($appDocs && $appDocs->cv_path) ? 'CV Replace Karein (PDF)' : 'CV Upload Karein (PDF)' }}
-                                </label>
                                 <input type="file" name="cv" class="form-control form-control-sm" accept=".pdf">
                                 <small class="text-muted">Max 5MB · PDF only</small>
                             </div>
                             <div class="col-md-5">
-                                <label class="form-label fw-semibold" style="font-size:0.85rem;">
-                                    <i class="fas fa-receipt me-1" style="color:var(--orange-gold);"></i>
-                                    {{ ($appDocs && $appDocs->challan_path) ? 'Challan Replace Karein' : 'Paid Challan Upload Karein' }}
-                                </label>
                                 <input type="file" name="challan" class="form-control form-control-sm" accept=".pdf,.jpg,.jpeg,.png">
                                 <small class="text-muted">Max 5MB · PDF/Image</small>
                             </div>
