@@ -4,14 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\Position;
 use App\Models\ContactMessage;
+use App\Models\MarketingMessage;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
     public function index()
     {
-        $positions = Position::where('is_active', true)->get();
-        return view('home', compact('positions'));
+        $positions  = Position::where('is_active', true)->get();
+        $marketing  = MarketingMessage::active()->latest()->get();
+        return view('home', compact('positions', 'marketing'));
     }
 
     public function instructions()

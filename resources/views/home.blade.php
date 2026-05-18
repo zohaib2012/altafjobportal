@@ -25,6 +25,32 @@
     </div>
 </div>
 
+{{-- Marketing Messages --}}
+@if(isset($marketing) && $marketing->count() > 0)
+<div class="container pt-4 pb-0">
+    @foreach($marketing as $msg)
+    @php
+        $styles = [
+            'announcement' => ['bg'=>'rgba(59,130,246,0.08)','border'=>'rgba(59,130,246,0.35)','icon'=>'fas fa-bullhorn','color'=>'var(--royal-blue)','badge'=>'rgba(59,130,246,0.15)'],
+            'warning'      => ['bg'=>'rgba(245,158,11,0.08)','border'=>'rgba(245,158,11,0.4)','icon'=>'fas fa-exclamation-triangle','color'=>'#D97706','badge'=>'rgba(245,158,11,0.15)'],
+            'success'      => ['bg'=>'rgba(16,185,129,0.08)','border'=>'rgba(16,185,129,0.35)','icon'=>'fas fa-check-circle','color'=>'#059669','badge'=>'rgba(16,185,129,0.15)'],
+        ];
+        $s = $styles[$msg->type] ?? $styles['announcement'];
+    @endphp
+    <div class="d-flex align-items-start gap-3 p-3 mb-3"
+         style="background:{{ $s['bg'] }};border:1.5px solid {{ $s['border'] }};border-radius:14px;">
+        <div style="width:38px;height:38px;background:{{ $s['badge'] }};border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <i class="{{ $s['icon'] }}" style="color:{{ $s['color'] }};font-size:1rem;"></i>
+        </div>
+        <div>
+            <div class="fw-bold mb-1" style="color:{{ $s['color'] }};font-size:0.95rem;">{{ $msg->title }}</div>
+            <div class="text-muted" style="font-size:0.88rem;line-height:1.5;">{{ $msg->message }}</div>
+        </div>
+    </div>
+    @endforeach
+</div>
+@endif
+
 <div class="container py-5">
     <div class="text-center mb-5">
         <h2 class="fw-bold mb-3" style="font-size: 2rem;">How It Works</h2>

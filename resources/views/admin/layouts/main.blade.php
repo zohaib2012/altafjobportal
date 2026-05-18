@@ -723,6 +723,11 @@
                     </a>
                 </div>
                 <div class="nav-item">
+                    <a href="{{ route('admin.marketing') }}" class="nav-link @if(request()->routeIs('admin.marketing*')) active @endif">
+                        <i class="fas fa-bullhorn"></i><span class="nav-text"> Marketing</span>
+                    </a>
+                </div>
+                <div class="nav-item">
                     <a href="{{ route('admin.settings') }}" class="nav-link @if(request()->routeIs('admin.settings*')) active @endif">
                         <i class="fas fa-cog"></i><span class="nav-text"> Settings</span>
                     </a>

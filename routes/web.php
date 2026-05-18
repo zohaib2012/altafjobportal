@@ -8,6 +8,7 @@ use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\ChallanController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\PositionsController;
+use App\Http\Controllers\Admin\MarketingController;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
@@ -372,6 +373,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::put('/positions/{id}', [PositionsController::class, 'update'])->name('positions.update');
         Route::delete('/positions/{id}', [PositionsController::class, 'destroy'])->name('positions.destroy');
         Route::post('/positions/{id}/toggle', [PositionsController::class, 'toggle'])->name('positions.toggle');
+
+        // Marketing
+        Route::get('/marketing', [MarketingController::class, 'index'])->name('marketing');
+        Route::post('/marketing', [MarketingController::class, 'store'])->name('marketing.store');
+        Route::patch('/marketing/{id}/toggle', [MarketingController::class, 'toggle'])->name('marketing.toggle');
+        Route::delete('/marketing/{id}', [MarketingController::class, 'destroy'])->name('marketing.destroy');
 
         // Merit list
         Route::get('/merit-list', [DashboardController::class, 'meritList'])->name('merit-list');
