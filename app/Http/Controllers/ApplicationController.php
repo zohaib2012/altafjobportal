@@ -10,9 +10,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
 
 class ApplicationController extends Controller
 {
@@ -124,27 +122,10 @@ class ApplicationController extends Controller
                     'challan_uploaded_at'  => $challanPath ? now() : null,
                 ]);
 
-                $existingUser = User::where('email', $validated['email'])->where('role', 'candidate')->first();
-                $password     = null;
-
-                if ($existingUser) {
-                    $existingUser->update(['application_id' => $application->id]);
-                    Auth::login($existingUser);
-                } else {
-                    $password = Str::random(8);
-                    $newUser = User::create([
-                        'name'           => $validated['full_name'],
-                        'email'          => $validated['email'],
-                        'password'       => Hash::make($password),
-                        'application_id' => $application->id,
-                        'role'           => 'candidate',
-                    ]);
-                    Auth::login($newUser);
-                }
+                // User is already logged in (apply route requires auth) — just store application_id in session
+                Auth::user()->update(['application_id' => $application->id]);
 
                 $request->session()->put('application_id', $applicationId);
-                $request->session()->put('temp_password', $password);
-                $request->session()->put('is_existing_user', $existingUser !== null);
 
                 return redirect()->route('apply.upload.now', $application->id);
             });
