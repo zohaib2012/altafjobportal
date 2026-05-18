@@ -755,6 +755,53 @@
         </div>
     </footer>
 
+    {{-- Login Required Modal (guests only) --}}
+    @guest
+    <div class="modal fade" id="loginRequiredModal" tabindex="-1" aria-labelledby="loginRequiredModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 20px; border: none; overflow: hidden;">
+                <div class="modal-header border-0 pb-0" style="background: linear-gradient(135deg, var(--primary-navy), var(--primary-blue)); padding: 2rem 2rem 1.5rem;">
+                    <div class="w-100 text-center">
+                        <div class="mb-3" style="width: 64px; height: 64px; background: rgba(255,255,255,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                            <i class="fas fa-lock text-white fs-4"></i>
+                        </div>
+                        <h5 class="modal-title text-white fw-bold fs-4" id="loginRequiredModalLabel">Pehle Login Karein</h5>
+                        <p class="text-white mb-0" style="opacity: 0.85; font-size: 0.92rem;">Apply karne ke liye aapko login karna hoga</p>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white position-absolute" data-bs-dismiss="modal" style="top: 1rem; right: 1rem;"></button>
+                </div>
+                <div class="modal-body text-center p-4">
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <a href="{{ route('login') }}" class="btn btn-primary-custom w-100 py-2">
+                                <i class="fas fa-sign-in-alt me-2"></i> Login
+                            </a>
+                            <small class="text-muted d-block mt-2">Pehle se account hai?</small>
+                        </div>
+                        <div class="col-6">
+                            <a href="{{ route('register') }}" class="btn btn-orange w-100 py-2">
+                                <i class="fas fa-user-plus me-2"></i> Register
+                            </a>
+                            <small class="text-muted d-block mt-2">Naya account banayein</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var applyUrl = '{{ route('apply') }}';
+        document.querySelectorAll('a[href="' + applyUrl + '"]').forEach(function (link) {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                new bootstrap.Modal(document.getElementById('loginRequiredModal')).show();
+            });
+        });
+    });
+    </script>
+    @endguest
+
     {{-- WhatsApp Floating Button --}}
     <a href="https://wa.me/923393511003" target="_blank" rel="noopener noreferrer"
        title="Chat on WhatsApp"
