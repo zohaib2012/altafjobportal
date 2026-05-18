@@ -18,8 +18,8 @@ Route::get('/instructions', [HomeController::class, 'instructions'])->name('inst
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
 Route::post('/contact', [HomeController::class, 'contactStore']);
 
-Route::get('/apply', [ApplicationController::class, 'index'])->name('apply');
-Route::post('/apply', [ApplicationController::class, 'store']);
+Route::get('/apply', [ApplicationController::class, 'index'])->name('apply')->middleware('auth');
+Route::post('/apply', [ApplicationController::class, 'store'])->middleware('auth');
 Route::get('/apply/success', [ApplicationController::class, 'success'])->name('apply.success');
 
 Route::get('/challan/{applicationId}/download', [ChallanController::class, 'download'])->name('challan.download');
@@ -27,8 +27,17 @@ Route::get('/challan/{applicationId}/download', [ChallanController::class, 'down
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// Registration
+Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+Route::post('/register', [AuthController::class, 'register']);
+
+// Forgot Password
 Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('forgot.password');
-Route::post('/forgot-password', [AuthController::class, 'resetPassword'])->name('forgot.password.reset');
+Route::post('/forgot-password', [AuthController::class, 'processForgotPassword'])->name('forgot.password.update');
+
+// Post-apply upload
+Route::get('/apply/upload/{applicationId}', [ApplicationController::class, 'showUploadNow'])->name('apply.upload.now')->middleware('auth');
 
 Route::get('/upload', [AuthController::class, 'dashboard'])->name('upload.dashboard')->middleware('auth');
 Route::get('/uploads', [AuthController::class, 'dashboard'])->name('uploads')->middleware('auth');

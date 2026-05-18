@@ -658,9 +658,6 @@
                     <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
                         <i class="fas fa-moon" id="themeIcon"></i>
                     </button>
-                    <a href="{{ route('apply') }}" class="btn btn-orange">
-                        <i class="fas fa-paper-plane me-1"></i> Apply
-                    </a>
                     @auth
                         <a href="{{ route('upload.dashboard') }}" class="btn btn-outline-light">
                             <i class="fas fa-tachometer-alt me-1"></i> Dashboard
@@ -672,6 +669,9 @@
                             </button>
                         </form>
                     @else
+                        <a href="{{ route('register') }}" class="btn btn-orange">
+                            <i class="fas fa-user-plus me-1"></i> Register
+                        </a>
                         <a href="{{ route('login') }}" class="btn btn-outline-light">
                             <i class="fas fa-sign-in-alt me-1"></i> Login
                         </a>

@@ -45,39 +45,52 @@ class AuthController extends Controller
         return redirect('/');
     }
 
+    public function showRegister()
+    {
+        return view('auth.register');
+    }
+
+    public function register(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email',
+            'password' => 'required|string|min:6|confirmed',
+        ]);
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => 'candidate',
+        ]);
+
+        Auth::login($user);
+
+        return redirect()->route('apply');
+    }
+
     public function showForgotPassword()
     {
         return view('auth.forgot-password');
     }
 
-    public function resetPassword(Request $request)
+    public function processForgotPassword(Request $request)
     {
         $request->validate([
             'email' => 'required|email',
-            'cnic'  => 'required|string',
+            'password' => 'required|string|min:6|confirmed',
         ]);
 
-        // Find application matching email + cnic
-        $application = Application::where('email', $request->email)
-            ->where('cnic', $request->cnic)
-            ->first();
-
-        if (!$application) {
-            return back()->withInput()->withErrors(['email' => 'Koi record nahi mila. Email ya CNIC galat hai.']);
-        }
-
-        // Find or get the user account
         $user = User::where('email', $request->email)->first();
 
         if (!$user) {
-            return back()->withInput()->withErrors(['email' => 'Is email ka koi account nahi hai. Pehle apply karein.']);
+            return back()->withErrors(['email' => 'Email not found. Is email ka koi account nahi hai.']);
         }
 
-        // Generate new random password
-        $newPassword = 'NEPH-' . strtoupper(substr(md5(time()), 0, 6));
-        $user->update(['password' => Hash::make($newPassword)]);
+        $user->update(['password' => Hash::make($request->password)]);
 
-        return redirect()->route('forgot.password')->with('new_password', $newPassword);
+        return redirect()->route('login')->with('success', 'Password updated successfully! Naye password se login karein.');
     }
 
     public function dashboard()

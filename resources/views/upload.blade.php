@@ -413,26 +413,56 @@
                     </div>
                     @endif
 
-                    {{-- Upload form --}}
-                    <form method="POST" action="{{ route('upload.documents.app', $app->id) }}" enctype="multipart/form-data">
-                        @csrf
-                        <div class="row g-3 align-items-end">
-                            <div class="col-md-5">
-                                <input type="file" name="cv" class="form-control form-control-sm" accept=".pdf">
-                                <small class="text-muted">Max 5MB · PDF only</small>
-                            </div>
-                            <div class="col-md-5">
-                                <input type="file" name="challan" class="form-control form-control-sm" accept=".pdf,.jpg,.jpeg,.png">
-                                <small class="text-muted">Max 5MB · PDF/Image</small>
-                            </div>
-                            <div class="col-md-2">
-                                <button type="submit" class="btn btn-sm w-100 fw-bold"
-                                    style="background:linear-gradient(135deg,var(--royal-blue),var(--primary-blue));color:white;border:none;border-radius:10px;padding:0.5rem 0.75rem;">
-                                    <i class="fas fa-cloud-upload-alt me-1"></i> Upload
-                                </button>
+                    {{-- Upload form: hide if approved + both docs uploaded --}}
+                    @if($app->status === 'approved' && $appDocs && $appDocs->cv_path && $appDocs->challan_path)
+                        <div class="mt-1">
+                            <a href="#" onclick="this.style.display='none';document.getElementById('replaceForm-{{$app->id}}').style.display='block';return false;"
+                               style="font-size:0.8rem;color:var(--royal-blue);">
+                                <i class="fas fa-edit me-1"></i> Documents replace karne hain?
+                            </a>
+                            <div id="replaceForm-{{$app->id}}" style="display:none;">
+                                <form method="POST" action="{{ route('upload.documents.app', $app->id) }}" enctype="multipart/form-data" class="mt-2">
+                                    @csrf
+                                    <div class="row g-3 align-items-end">
+                                        <div class="col-md-5">
+                                            <input type="file" name="cv" class="form-control form-control-sm" accept=".pdf">
+                                            <small class="text-muted">Max 5MB · PDF only</small>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <input type="file" name="challan" class="form-control form-control-sm" accept=".pdf,.jpg,.jpeg,.png">
+                                            <small class="text-muted">Max 5MB · PDF/Image</small>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button type="submit" class="btn btn-sm w-100 fw-bold"
+                                                style="background:linear-gradient(135deg,var(--royal-blue),var(--primary-blue));color:white;border:none;border-radius:10px;padding:0.5rem 0.75rem;">
+                                                <i class="fas fa-cloud-upload-alt me-1"></i> Upload
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                         </div>
-                    </form>
+                    @else
+                        <form method="POST" action="{{ route('upload.documents.app', $app->id) }}" enctype="multipart/form-data">
+                            @csrf
+                            <div class="row g-3 align-items-end">
+                                <div class="col-md-5">
+                                    <input type="file" name="cv" class="form-control form-control-sm" accept=".pdf">
+                                    <small class="text-muted">Max 5MB · PDF only</small>
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="file" name="challan" class="form-control form-control-sm" accept=".pdf,.jpg,.jpeg,.png">
+                                    <small class="text-muted">Max 5MB · PDF/Image</small>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-sm w-100 fw-bold"
+                                        style="background:linear-gradient(135deg,var(--royal-blue),var(--primary-blue));color:white;border:none;border-radius:10px;padding:0.5rem 0.75rem;">
+                                        <i class="fas fa-cloud-upload-alt me-1"></i> Upload
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    @endif
                 </div>
                 @endforeach
             </div>
