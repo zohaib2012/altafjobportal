@@ -153,7 +153,7 @@ class ApplicationController extends Controller
         $user = Auth::user();
 
         $application = Application::where('id', $applicationId)
-            ->where('email', $user->email)
+            ->where('user_id', $user->id)
             ->with(['challan', 'position', 'documents'])
             ->firstOrFail();
 
