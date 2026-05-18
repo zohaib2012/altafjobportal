@@ -12,7 +12,15 @@
                 </div>
                 <h2 class="fw-bold mb-2">Application Submitted!</h2>
                 <p class="text-muted fs-5">Application ID: <strong style="color: var(--primary-blue);">{{ $application->application_id }}</strong></p>
-                <p class="text-muted">Challan bhi ready hai &mdash; download kar sakte hain.</p>
+                <p class="text-muted mb-3">Challan bhi ready hai &mdash; download kar ke bank mein jama karein.</p>
+                @if($application->challan)
+                <a href="{{ route('challan.download', $application->application_id) }}"
+                   class="btn btn-lg fw-bold px-5 py-2 mb-2"
+                   style="background: linear-gradient(135deg, #F59E0B, #D97706); color: #1a1a1a; border: none; border-radius: 12px; box-shadow: 0 4px 16px rgba(245,158,11,0.4);">
+                    <i class="fas fa-download me-2"></i> Download Fee Challan
+                    <span class="ms-2 opacity-75" style="font-size:0.85rem;">Rs. {{ number_format($application->challan->total_amount) }}</span>
+                </a>
+                @endif
             </div>
 
             <div class="card-custom p-4 mb-4">
