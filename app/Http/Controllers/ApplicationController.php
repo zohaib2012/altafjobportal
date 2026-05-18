@@ -42,8 +42,8 @@ class ApplicationController extends Controller
             'father_name'   => 'required|string|max:200',
             'cnic'          => 'required|string|max:15',
             'date_of_birth' => 'required|date',
-            'mobile'        => 'required|string|max:15',
             'email'         => 'required|email|max:200',
+            'mobile'        => 'required|string|max:15',
             'address'       => 'required|string',
             'qualification' => 'required|string|max:200',
             'position_id'   => 'required|exists:positions,id',
@@ -88,6 +88,7 @@ class ApplicationController extends Controller
 
                 $application = Application::create([
                     'application_id' => $applicationId,
+                    'user_id'        => Auth::id(),
                     'full_name'      => $validated['full_name'],
                     'father_name'    => $validated['father_name'],
                     'cnic'           => $validated['cnic'],

@@ -98,12 +98,20 @@ class AuthController extends Controller
         $user = Auth::user();
 
         // Latest application (for upload form)
-        $application = $user->application ?? null;
+        $application = \App\Models\Application::where('user_id', $user->id)
+            ->orWhere(function ($q) use ($user) {
+                $q->whereNull('user_id')->where('email', $user->email);
+            })
+            ->latest()
+            ->first();
         $documents   = $application?->documents ?? null;
         $challan     = $application?->challan ?? null;
 
-        // All applications by this email (for history list + upload)
-        $allApplications = \App\Models\Application::where('email', $user->email)
+        // All applications belonging to this user (user_id takes priority; email fallback for legacy records)
+        $allApplications = \App\Models\Application::where('user_id', $user->id)
+            ->orWhere(function ($q) use ($user) {
+                $q->whereNull('user_id')->where('email', $user->email);
+            })
             ->with('position', 'challan', 'documents')
             ->orderBy('created_at', 'desc')
             ->get();
