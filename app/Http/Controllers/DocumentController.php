@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Application;
 use App\Models\Document;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,56 +13,50 @@ class DocumentController extends Controller
 {
     public function uploadCv(Request $request)
     {
-        $request->validate([
-            'cv' => 'required|file|mimes:pdf|max:5120',
-        ]);
+        $request->validate(['cv' => 'required|file|mimes:pdf|max:5120']);
 
-        $user = Auth::user();
+        $user        = Auth::user();
         $application = $user->application;
-        $documents = $application->documents;
+        $documents   = $application->documents;
 
         if ($documents->cv_path && Storage::exists($documents->cv_path)) {
             Storage::delete($documents->cv_path);
         }
 
         $file = $request->file('cv');
-        $path = $file->store('uploads/cvs');
-
         $documents->update([
-            'cv_path' => $path,
+            'cv_path'          => $file->store('uploads/cvs'),
             'cv_original_name' => $file->getClientOriginalName(),
-            'cv_size' => $file->getSize(),
-            'cv_uploaded_at' => now(),
+            'cv_size'          => $file->getSize(),
+            'cv_uploaded_at'   => now(),
         ]);
 
-        return back()->with('success', 'CV uploaded successfully!');
+        $this->checkAndApprove($application->fresh());
+        return back()->with('success', 'CV upload ho gaya!');
     }
 
     public function uploadChallan(Request $request)
     {
-        $request->validate([
-            'challan' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
-        ]);
+        $request->validate(['challan' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120']);
 
-        $user = Auth::user();
+        $user        = Auth::user();
         $application = $user->application;
-        $documents = $application->documents;
+        $documents   = $application->documents;
 
         if ($documents->challan_path && Storage::exists($documents->challan_path)) {
             Storage::delete($documents->challan_path);
         }
 
         $file = $request->file('challan');
-        $path = $file->store('uploads/challans');
-
         $documents->update([
-            'challan_path' => $path,
+            'challan_path'          => $file->store('uploads/challans'),
             'challan_original_name' => $file->getClientOriginalName(),
-            'challan_size' => $file->getSize(),
-            'challan_uploaded_at' => now(),
+            'challan_size'          => $file->getSize(),
+            'challan_uploaded_at'   => now(),
         ]);
 
-        return back()->with('success', 'Paid challan uploaded successfully!');
+        $this->checkAndApprove($application->fresh());
+        return back()->with('success', 'Paid challan upload ho gaya!');
     }
 
     public function uploadDocuments(Request $request)
@@ -73,19 +68,16 @@ class DocumentController extends Controller
         $rules = [];
         if ($request->hasFile('cv')) {
             $rules['cv'] = 'file|mimes:pdf|max:5120';
+        } elseif (!$documents->cv_path) {
+            $rules['cv'] = 'required|file|mimes:pdf|max:5120';
         }
         if ($request->hasFile('challan')) {
             $rules['challan'] = 'file|mimes:pdf,jpg,jpeg,png|max:5120';
-        }
-        if (!$request->hasFile('cv') && !$documents->cv_path) {
-            $rules['cv'] = 'required|file|mimes:pdf|max:5120';
-        }
-        if (!$request->hasFile('challan') && !$documents->challan_path) {
+        } elseif (!$documents->challan_path) {
             $rules['challan'] = 'required|file|mimes:pdf,jpg,jpeg,png|max:5120';
         }
 
         $validator = Validator::make($request->all(), $rules);
-
         if ($validator->fails()) {
             if ($request->ajax()) {
                 return response()->json(['success' => false, 'errors' => $validator->errors()->toArray()], 422);
@@ -119,28 +111,23 @@ class DocumentController extends Controller
 
         if (!empty($updates)) {
             $documents->update($updates);
+            $this->checkAndApprove($application->fresh());
         }
 
         if ($request->ajax()) {
-            return response()->json(['success' => true, 'redirect' => route('home')]);
+            return response()->json(['success' => true, 'redirect' => route('upload.dashboard')]);
         }
 
-        return redirect()->route('home')->with('success', 'Documents successfully uploaded! Admin will verify and update your status.');
+        return redirect()->route('upload.dashboard')->with('success', 'Documents upload ho gaye!');
     }
 
     public function uploadForApplication(Request $request, $applicationId)
     {
-        $user = Auth::user();
-
-        // Verify this application belongs to the logged-in user
-        $application = \App\Models\Application::where('id', $applicationId)
+        $user        = Auth::user();
+        $application = Application::where('id', $applicationId)
             ->where('email', $user->email)
             ->firstOrFail();
-
-        $documents = $application->documents;
-        if (!$documents) {
-            $documents = \App\Models\Document::create(['application_id' => $application->id]);
-        }
+        $documents   = $application->documents;
 
         $rules = [];
         if ($request->hasFile('cv')) {
@@ -181,14 +168,19 @@ class DocumentController extends Controller
 
         if (!empty($updates)) {
             $documents->update($updates);
-            // If either CV or challan uploaded and status is still pending → mark approved
-            $freshDocs = $documents->fresh();
-            if ($application->status === 'pending' && ($freshDocs->cv_path || $freshDocs->challan_path)) {
-                $application->update(['status' => 'approved']);
-            }
+            $this->checkAndApprove($application->fresh());
         }
 
-        return back()->with('success', 'Documents upload ho gaye! Application: ' . $application->application_id);
+        return redirect()->route('upload.dashboard')
+            ->with('success', 'Documents upload ho gaye! Application: ' . $application->application_id);
+    }
+
+    protected function checkAndApprove(Application $application)
+    {
+        $docs = $application->documents;
+        if ($docs && $docs->cv_path && $docs->challan_path) {
+            $application->update(['status' => 'approved']);
+        }
     }
 
     public function download($path)
@@ -196,9 +188,7 @@ class DocumentController extends Controller
         if (!Storage::exists($path)) {
             abort(404, 'File not found');
         }
-
-        $fileName = basename($path);
-        return Storage::download($path, $fileName);
+        return Storage::download($path, basename($path));
     }
 
     public function viewInline($path)
@@ -206,7 +196,6 @@ class DocumentController extends Controller
         if (!Storage::exists($path)) {
             abort(404, 'File not found');
         }
-
         return Storage::response($path);
     }
 }

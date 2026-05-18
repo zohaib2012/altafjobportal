@@ -8,6 +8,7 @@ use App\Models\Challan;
 use App\Models\Document;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -82,8 +83,8 @@ class ApplicationController extends Controller
                     $challanSize = $f->getSize();
                 }
 
-                // Auto-approve if any document uploaded on the spot
-                $initialStatus = ($cvPath || $challanPath) ? 'approved' : 'pending';
+                // Auto-approve only if BOTH CV and challan uploaded
+                $initialStatus = ($cvPath && $challanPath) ? 'approved' : 'pending';
 
                 $application = Application::create([
                     'application_id' => $applicationId,
@@ -127,22 +128,24 @@ class ApplicationController extends Controller
 
                 if ($existingUser) {
                     $existingUser->update(['application_id' => $application->id]);
+                    Auth::login($existingUser);
                 } else {
                     $password = Str::random(8);
-                    User::create([
+                    $newUser = User::create([
                         'name'           => $validated['full_name'],
                         'email'          => $validated['email'],
                         'password'       => Hash::make($password),
                         'application_id' => $application->id,
                         'role'           => 'candidate',
                     ]);
+                    Auth::login($newUser);
                 }
 
                 $request->session()->put('application_id', $applicationId);
                 $request->session()->put('temp_password', $password);
                 $request->session()->put('is_existing_user', $existingUser !== null);
 
-                return redirect()->route('apply.success');
+                return redirect()->route('apply.upload.now', $application->id);
             });
         } catch (\Illuminate\Database\QueryException $e) {
             $msg = $e->getMessage();
@@ -161,6 +164,18 @@ class ApplicationController extends Controller
                 'general' => 'Kuch masla hua, dobara koshish karein.',
             ]);
         }
+    }
+
+    public function showUploadNow($applicationId)
+    {
+        $user = Auth::user();
+
+        $application = Application::where('id', $applicationId)
+            ->where('email', $user->email)
+            ->with(['challan', 'position', 'documents'])
+            ->firstOrFail();
+
+        return view('apply-upload', compact('application'));
     }
 
     public function success()
