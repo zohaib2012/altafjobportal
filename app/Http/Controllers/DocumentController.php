@@ -171,6 +171,15 @@ class DocumentController extends Controller
             $this->checkAndApprove($application->fresh());
         }
 
+        $freshApp = $application->fresh();
+        $docs     = $freshApp->documents;
+        $bothUploaded = $docs && $docs->cv_path && $docs->challan_path;
+
+        if ($request->input('from') === 'apply_upload' && $bothUploaded) {
+            return redirect()->route('home')
+                ->with('success', 'Documents upload ho gaye! Application ID: ' . $application->application_id . ' — Status: Approved');
+        }
+
         return redirect()->route('upload.dashboard')
             ->with('success', 'Documents upload ho gaye! Application: ' . $application->application_id);
     }
