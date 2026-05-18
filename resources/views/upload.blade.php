@@ -418,7 +418,7 @@
                         <div class="mt-1">
                             <a href="#" onclick="this.style.display='none';document.getElementById('replaceForm-{{$app->id}}').style.display='block';return false;"
                                style="font-size:0.8rem;color:var(--royal-blue);">
-                                <i class="fas fa-edit me-1"></i> Documents replace karne hain?
+                                <i class="fas fa-edit me-1"></i>Replace documents from here?
                             </a>
                             <div id="replaceForm-{{$app->id}}" style="display:none;">
                                 <form method="POST" action="{{ route('upload.documents.app', $app->id) }}" enctype="multipart/form-data" class="mt-2">

@@ -776,7 +776,7 @@
                             <a href="{{ route('login') }}" class="btn btn-primary-custom w-100 py-2">
                                 <i class="fas fa-sign-in-alt me-2"></i> Login
                             </a>
-                            <small class="text-muted d-block mt-2">Pehle se account hai?</small>
+                            <small class="text-muted d-block mt-2">Registered user login and apply.</small>
                         </div>
                         <div class="col-6">
                             <a href="{{ route('register') }}" class="btn btn-orange w-100 py-2">
