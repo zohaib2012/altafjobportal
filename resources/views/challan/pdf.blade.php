@@ -12,35 +12,20 @@
         .copy-cell { width: 33.33%; vertical-align: top; border: 1.5pt solid #1B3A6B; padding: 5pt; }
         .copy-cell + .copy-cell { border-left: 1pt dashed #aaa; }
 
-        /* Header */
         .logo-row { text-align: center; border-bottom: 1.5pt solid #1B3A6B; padding-bottom: 4pt; margin-bottom: 4pt; }
         .org-name { font-size: 10pt; font-weight: bold; color: #1B3A6B; letter-spacing: 0.3pt; }
         .org-tagline { font-size: 7pt; color: #2563EB; }
 
-        /* Title bar */
         .title-bar { background: #1B3A6B; color: #fff; text-align: center; font-weight: bold; font-size: 8pt; padding: 3pt; margin-bottom: 4pt; }
 
-        /* Challan no */
         .challan-no { text-align: right; font-size: 7pt; font-weight: bold; margin-bottom: 4pt; color: #1B3A6B; }
 
-        /* Info rows */
         .info-row { display: table; width: 100%; border-bottom: 0.5pt solid #ddd; margin-bottom: 1pt; }
         .info-label { display: table-cell; width: 38%; font-size: 7pt; color: #555; padding: 2pt 0; }
         .info-value { display: table-cell; font-size: 7pt; font-weight: bold; padding: 2pt 0; }
 
-        /* Section headers */
         .section-header { background: #1B3A6B; color: #fff; font-weight: bold; font-size: 7pt; padding: 2pt 4pt; margin: 5pt 0 3pt; }
 
-        /* Two-column section (info + QR placeholder) */
-        .section-with-qr { display: table; width: 100%; }
-        .section-content { display: table-cell; vertical-align: top; }
-        .qr-box { display: table-cell; vertical-align: top; width: 38pt; }
-        .qr-placeholder { width: 34pt; height: 34pt; border: 1pt solid #aaa; text-align: center; font-size: 5pt; color: #aaa; padding-top: 10pt; }
-
-        /* Barcode placeholder */
-        .barcode-placeholder { border: 0.5pt solid #aaa; height: 16pt; text-align: center; font-size: 5pt; color: #aaa; line-height: 16pt; margin-top: 2pt; letter-spacing: 2pt; }
-
-        /* Fee table */
         .fee-table { width: 100%; }
         .fee-row { display: table; width: 100%; border-bottom: 0.5pt solid #eee; padding: 2pt 0; }
         .fee-label { display: table-cell; font-size: 7pt; color: #444; }
@@ -49,19 +34,12 @@
         .fee-total .fee-label,
         .fee-total .fee-value { font-size: 8pt; font-weight: bold; color: #1B3A6B; }
 
-        /* Payment fields */
         .field-line { border-bottom: 0.5pt solid #333; height: 12pt; margin-bottom: 3pt; }
         .field-label { font-size: 6.5pt; color: #555; }
 
-        /* Instructions */
         .instruction-list { padding-left: 9pt; margin-top: 2pt; }
         .instruction-list li { font-size: 6.5pt; color: #333; margin-bottom: 1.5pt; }
 
-        /* Signatures */
-        .sig-table { width: 100%; margin-top: 6pt; }
-        .sig-cell { display: table-cell; width: 50%; text-align: center; font-size: 6.5pt; color: #555; padding-top: 14pt; border-top: 0.5pt solid #555; }
-
-        /* Copy label */
         .copy-label { text-align: center; font-size: 6.5pt; font-weight: bold; margin-top: 3pt; padding: 1.5pt; }
         .label-bank { background: #1B3A6B; color: #fff; }
         .label-candidate { background: #16A34A; color: #fff; }
@@ -93,19 +71,10 @@
     </div>
 
     <div class="section-header">Candidate Information</div>
-    <div class="section-with-qr">
-        <div class="section-content">
-            <div class="info-row"><div class="info-label">Name:</div><div class="info-value">{{ $application->full_name }}</div></div>
-            <div class="info-row"><div class="info-label">CNIC:</div><div class="info-value">{{ $application->cnic }}</div></div>
-            <div class="info-row"><div class="info-label">Father Name:</div><div class="info-value">{{ $application->father_name }}</div></div>
-            <div class="info-row"><div class="info-label">Mobile Number:</div><div class="info-value">{{ $application->mobile }}</div></div>
-        </div>
-        <div class="qr-box">
-            @if(!empty($qrCodeBase64))
-            <img src="{{ $qrCodeBase64 }}" style="width:34pt;height:34pt;object-fit:contain;">
-            @endif
-        </div>
-    </div>
+    <div class="info-row"><div class="info-label">Name:</div><div class="info-value">{{ $application->full_name }}</div></div>
+    <div class="info-row"><div class="info-label">CNIC:</div><div class="info-value">{{ $application->cnic }}</div></div>
+    <div class="info-row"><div class="info-label">Father Name:</div><div class="info-value">{{ $application->father_name }}</div></div>
+    <div class="info-row"><div class="info-label">Mobile Number:</div><div class="info-value">{{ $application->mobile }}</div></div>
 
     <div class="section-header">Fee Details</div>
     <div class="fee-table">
@@ -115,10 +84,10 @@
     </div>
 
     <div class="section-header">Bank Details</div>
-    <div class="info-row"><div class="info-label">Bank Name:</div><div class="info-value">National Bank of Pakistan</div></div>
+    <div class="info-row"><div class="info-label">Bank Name:</div><div class="info-value">Faysal Bank</div></div>
     <div class="info-row"><div class="info-label">Account Title:</div><div class="info-value">National EduPortal Hub</div></div>
-    <div class="info-row"><div class="info-label">Account No:</div><div class="info-value">02243513609247</div></div>
-    <div class="info-row"><div class="info-label">IBAN:</div><div class="info-value">PK03NBPA02243513609247</div></div>
+    <div class="info-row"><div class="info-label">Account No:</div><div class="info-value">3546499000004682</div></div>
+    <div class="info-row"><div class="info-label">IBAN:</div><div class="info-value">PK69FAYS3546499000004682</div></div>
 
     <div class="section-header">Payment Details</div>
     <div class="field-label">Deposit Date:</div>
@@ -157,19 +126,10 @@
     </div>
 
     <div class="section-header">Candidate Information</div>
-    <div class="section-with-qr">
-        <div class="section-content">
-            <div class="info-row"><div class="info-label">Name:</div><div class="info-value">{{ $application->full_name }}</div></div>
-            <div class="info-row"><div class="info-label">CNIC:</div><div class="info-value">{{ $application->cnic }}</div></div>
-            <div class="info-row"><div class="info-label">Father Name:</div><div class="info-value">{{ $application->father_name }}</div></div>
-            <div class="info-row"><div class="info-label">Mobile Number:</div><div class="info-value">{{ $application->mobile }}</div></div>
-        </div>
-        <div class="qr-box">
-            @if(!empty($qrCodeBase64))
-            <img src="{{ $qrCodeBase64 }}" style="width:34pt;height:34pt;object-fit:contain;">
-            @endif
-        </div>
-    </div>
+    <div class="info-row"><div class="info-label">Name:</div><div class="info-value">{{ $application->full_name }}</div></div>
+    <div class="info-row"><div class="info-label">CNIC:</div><div class="info-value">{{ $application->cnic }}</div></div>
+    <div class="info-row"><div class="info-label">Father Name:</div><div class="info-value">{{ $application->father_name }}</div></div>
+    <div class="info-row"><div class="info-label">Mobile Number:</div><div class="info-value">{{ $application->mobile }}</div></div>
 
     <div class="section-header">Fee Details</div>
     <div class="fee-table">
@@ -179,10 +139,10 @@
     </div>
 
     <div class="section-header">Bank Details</div>
-    <div class="info-row"><div class="info-label">Bank Name:</div><div class="info-value">National Bank of Pakistan</div></div>
+    <div class="info-row"><div class="info-label">Bank Name:</div><div class="info-value">Faysal Bank</div></div>
     <div class="info-row"><div class="info-label">Account Title:</div><div class="info-value">National EduPortal Hub</div></div>
-    <div class="info-row"><div class="info-label">Account No:</div><div class="info-value">02243513609247</div></div>
-    <div class="info-row"><div class="info-label">IBAN:</div><div class="info-value">PK03NBPA02243513609247</div></div>
+    <div class="info-row"><div class="info-label">Account No:</div><div class="info-value">3546499000004682</div></div>
+    <div class="info-row"><div class="info-label">IBAN:</div><div class="info-value">PK69FAYS3546499000004682</div></div>
 
     <div class="section-header">Payment Details</div>
     <div class="field-label">Deposit Date:</div>
@@ -221,19 +181,10 @@
     </div>
 
     <div class="section-header">Candidate Information</div>
-    <div class="section-with-qr">
-        <div class="section-content">
-            <div class="info-row"><div class="info-label">Name:</div><div class="info-value">{{ $application->full_name }}</div></div>
-            <div class="info-row"><div class="info-label">CNIC:</div><div class="info-value">{{ $application->cnic }}</div></div>
-            <div class="info-row"><div class="info-label">Father Name:</div><div class="info-value">{{ $application->father_name }}</div></div>
-            <div class="info-row"><div class="info-label">Mobile Number:</div><div class="info-value">{{ $application->mobile }}</div></div>
-        </div>
-        <div class="qr-box">
-            @if(!empty($qrCodeBase64))
-            <img src="{{ $qrCodeBase64 }}" style="width:34pt;height:34pt;object-fit:contain;">
-            @endif
-        </div>
-    </div>
+    <div class="info-row"><div class="info-label">Name:</div><div class="info-value">{{ $application->full_name }}</div></div>
+    <div class="info-row"><div class="info-label">CNIC:</div><div class="info-value">{{ $application->cnic }}</div></div>
+    <div class="info-row"><div class="info-label">Father Name:</div><div class="info-value">{{ $application->father_name }}</div></div>
+    <div class="info-row"><div class="info-label">Mobile Number:</div><div class="info-value">{{ $application->mobile }}</div></div>
 
     <div class="section-header">Fee Details</div>
     <div class="fee-table">
@@ -243,10 +194,10 @@
     </div>
 
     <div class="section-header">Bank Details</div>
-    <div class="info-row"><div class="info-label">Bank Name:</div><div class="info-value">National Bank of Pakistan</div></div>
+    <div class="info-row"><div class="info-label">Bank Name:</div><div class="info-value">Faysal Bank</div></div>
     <div class="info-row"><div class="info-label">Account Title:</div><div class="info-value">National EduPortal Hub</div></div>
-    <div class="info-row"><div class="info-label">Account No:</div><div class="info-value">02243513609247</div></div>
-    <div class="info-row"><div class="info-label">IBAN:</div><div class="info-value">PK03NBPA02243513609247</div></div>
+    <div class="info-row"><div class="info-label">Account No:</div><div class="info-value">3546499000004682</div></div>
+    <div class="info-row"><div class="info-label">IBAN:</div><div class="info-value">PK69FAYS3546499000004682</div></div>
 
     <div class="section-header">Payment Details</div>
     <div class="field-label">Deposit Date:</div>

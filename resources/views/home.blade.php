@@ -222,7 +222,7 @@
                         </div>
                         <div>
                             <div class="fw-bold">Bank Deposit</div>
-                            <small class="text-muted">National Bank of Pakistan</small>
+                            <small class="text-muted">Faysal Bank — 3546499000004682</small>
                         </div>
                     </div>
                     <div class="d-flex align-items-center gap-3 p-3" style="background: rgba(16,185,129,0.05); border-radius: 10px;">

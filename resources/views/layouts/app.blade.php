@@ -722,12 +722,12 @@
                     </ul>
                 </div>
                 <div class="col-lg-3 col-md-6">
-                    <h6>Positions</h6>
+                    <h6>Legal</h6>
                     <ul class="list-unstyled d-flex flex-column gap-2">
-                        <li><a href="{{ route('apply') }}">Teaching Staff</a></li>
-                        <li><a href="{{ route('apply') }}">Non-Teaching</a></li>
-                        <li><a href="{{ route('apply') }}">Administrative</a></li>
-                        <li><a href="{{ route('apply') }}">Support Staff</a></li>
+                        <li><a href="{{ route('terms') }}"><i class="fas fa-file-contract me-1" style="color:var(--amber);font-size:0.75rem;"></i>Terms &amp; Conditions</a></li>
+                        <li><a href="{{ route('privacy') }}"><i class="fas fa-shield-alt me-1" style="color:var(--amber);font-size:0.75rem;"></i>Privacy Policy</a></li>
+                        <li><a href="{{ route('refund') }}"><i class="fas fa-undo me-1" style="color:var(--amber);font-size:0.75rem;"></i>Refund Policy</a></li>
+                        <li><a href="{{ route('disclaimer') }}"><i class="fas fa-exclamation-circle me-1" style="color:var(--amber);font-size:0.75rem;"></i>Disclaimer</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-3 col-md-6">
@@ -749,8 +749,14 @@
                 </div>
             </div>
             <hr style="border-color: rgba(255,255,255,0.1); margin: 2rem 0;">
-            <div class="text-center">
-                <small style="color: rgba(255,255,255,0.85);">&copy; {{ date('Y') }} National EduPortal Hub. All rights reserved.</small>
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+                <small style="color: rgba(255,255,255,0.85);">&copy; {{ date('Y') }} National EduPortal Hub. All rights reserved. &nbsp;|&nbsp; Private Recruitment &amp; Career Information Portal</small>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="{{ route('terms') }}" style="color:rgba(255,255,255,0.6);font-size:0.78rem;">Terms</a>
+                    <a href="{{ route('privacy') }}" style="color:rgba(255,255,255,0.6);font-size:0.78rem;">Privacy</a>
+                    <a href="{{ route('refund') }}" style="color:rgba(255,255,255,0.6);font-size:0.78rem;">Refund</a>
+                    <a href="{{ route('disclaimer') }}" style="color:rgba(255,255,255,0.6);font-size:0.78rem;">Disclaimer</a>
+                </div>
             </div>
         </div>
     </footer>

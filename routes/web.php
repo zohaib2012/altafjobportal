@@ -19,6 +19,12 @@ Route::get('/instructions', [HomeController::class, 'instructions'])->name('inst
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
 Route::post('/contact', [HomeController::class, 'contactStore']);
 
+// Legal pages
+Route::get('/terms', fn() => view('legal.terms'))->name('terms');
+Route::get('/privacy-policy', fn() => view('legal.privacy'))->name('privacy');
+Route::get('/refund-policy', fn() => view('legal.refund'))->name('refund');
+Route::get('/disclaimer', fn() => view('legal.disclaimer'))->name('disclaimer');
+
 Route::get('/apply', [ApplicationController::class, 'index'])->name('apply')->middleware('auth');
 Route::post('/apply', [ApplicationController::class, 'store'])->middleware('auth');
 Route::get('/apply/success', [ApplicationController::class, 'success'])->name('apply.success');
@@ -233,8 +239,7 @@ Route::get('/update-positions', function() {
         // Update positions safely — never delete (would cascade-delete applications)
         $positionData = [
             ['title'=>'Controller',            'department'=>'Administration', 'bps'=>'Contract', 'vacancies'=>3,    'age_limit'=>'18-48', 'qualification_required'=>'MA',                            'domicile'=>'All over Sindh', 'fee_amount'=>450, 'is_active'=>1],
-            ['title'=>'Managing Director',     'department'=>'Management',     'bps'=>'Contract', 'vacancies'=>6,    'age_limit'=>'18-45', 'qualification_required'=>'MA',                            'domicile'=>'All over Sindh', 'fee_amount'=>450, 'is_active'=>1],
-            ['title'=>'Coordinator',           'department'=>'Coordination',   'bps'=>'Contract', 'vacancies'=>18,   'age_limit'=>'18-45', 'qualification_required'=>'Graduation',                    'domicile'=>'All over Sindh', 'fee_amount'=>450, 'is_active'=>1],
+['title'=>'Coordinator',           'department'=>'Coordination',   'bps'=>'Contract', 'vacancies'=>18,   'age_limit'=>'18-45', 'qualification_required'=>'Graduation',                    'domicile'=>'All over Sindh', 'fee_amount'=>450, 'is_active'=>1],
             ['title'=>'District Coordinator',  'department'=>'Coordination',   'bps'=>'Contract', 'vacancies'=>35,   'age_limit'=>'18-45', 'qualification_required'=>'Graduation',                    'domicile'=>'All over Sindh', 'fee_amount'=>450, 'is_active'=>1],
             ['title'=>'Monitoring Officer',    'department'=>'Monitoring',     'bps'=>'Contract', 'vacancies'=>300,  'age_limit'=>'18-45', 'qualification_required'=>'Intermediate',                  'domicile'=>'All over Sindh', 'fee_amount'=>450, 'is_active'=>1],
             ['title'=>'Assistant',             'department'=>'Administration', 'bps'=>'Contract', 'vacancies'=>370,  'age_limit'=>'18-45', 'qualification_required'=>'Intermediate',                  'domicile'=>'All over Sindh', 'fee_amount'=>450, 'is_active'=>1],
