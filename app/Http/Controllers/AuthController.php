@@ -67,6 +67,7 @@ class AuthController extends Controller
 
         Auth::login($user);
 
+        session()->flash('just_registered', true);
         return redirect()->route('apply');
     }
 

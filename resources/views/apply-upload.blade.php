@@ -2,6 +2,15 @@
 
 @section('title', 'Upload Documents')
 
+@section('scripts')
+<script>
+    // Track successful application submission
+    if (typeof fbq !== 'undefined') {
+        fbq('track', 'Lead');
+    }
+</script>
+@endsection
+
 @section('content')
 <div class="container py-5">
     <div class="row justify-content-center">

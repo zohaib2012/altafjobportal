@@ -361,6 +361,12 @@
 
 @section('scripts')
 <script>
+    @if(session('just_registered'))
+    if (typeof fbq !== 'undefined') {
+        fbq('track', 'CompleteRegistration');
+    }
+    @endif
+
 document.addEventListener('DOMContentLoaded', function() {
     const cnicInput = document.querySelector('input[name="cnic"]');
     if(cnicInput) {
