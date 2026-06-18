@@ -753,7 +753,7 @@
                     <ul class="list-unstyled d-flex flex-column gap-3">
                         <li class="d-flex align-items-start gap-2">
                             <i class="fas fa-map-marker-alt mt-1" style="color: var(--amber);"></i>
-                            <small>Block-5, Clifton Commercial Area, Karachi, Pakistan</small>
+                            <small>94/4 Sector 16 A Buffer Zone Karachi Sindh</small>
                         </li>
                         <li class="d-flex align-items-center gap-2">
                             <i class="fas fa-phone" style="color: var(--amber);"></i>
