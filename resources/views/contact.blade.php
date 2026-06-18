@@ -58,7 +58,7 @@
                         </div>
                         <div>
                             <small class="text-muted d-block">Address</small>
-                            <span class="fw-bold">Block-5, Clifton, Karachi</span>
+                            <span class="fw-bold">94/4 Sector 16 A Buffer Zone Karachi Sindh</span>
                         </div>
                     </div>
                     <div class="d-flex align-items-center gap-3">
